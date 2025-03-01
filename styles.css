@@ -56,6 +56,10 @@ h2
   max-height: 170px;
   writing-mode: vertical-lr;
   text-orientation: upright;
+
+  display: inline-block;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 /* 角丸無し */
