@@ -180,7 +180,7 @@ td
 }
 
 /* セル内要素 */
-td > span,
+th > span,
 td > button
 {
   width: 100%;
