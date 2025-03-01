@@ -155,6 +155,27 @@ function drawSetting() {
             // テンプレートを複製
             cloneItem = templateItemFollow.content.cloneNode(true);
 
+            // コスト
+            let costIndex = 0;
+            cloneItem.querySelectorAll('[class^="input_cost_"]').forEach(cost => {
+                // 初期値の設定
+                cost.value = character.cost[costIndex];
+
+                // 変更イベント
+                cost.addEventListener(
+                    "change",
+                    ((character, costIndex) => (event) => {
+                        // キャラクターリストのコストを更新
+                        character.cost[costIndex] = Number(event.target.value);
+
+                        // 再計算
+                        calcFushigi();
+                    })(character, costIndex)
+                );
+
+                costIndex++
+            });
+
             // 削除ボタン
             cloneItem.querySelector("button.removeCharacter").addEventListener(
                 "click",
@@ -176,23 +197,6 @@ function drawSetting() {
 
         // キャラクター名
         cloneItem.querySelector("input.input_name").value = character.name;
-
-        // コスト
-        let costIndex = 0;
-        cloneItem.querySelectorAll('[class^="input_cost_"]').forEach(cost => {
-            // 初期値の設定
-            cost.value = character.cost[costIndex];
-
-            // 変更イベント
-            cost.addEventListener(
-                "change",
-                ((character, costIndex) => (event) => {
-                    character.cost[costIndex] = Number(event.target.value);
-                })(character, costIndex)
-            );
-
-            costIndex++
-        });
 
         // 要素を追加する
         addPoint.appendChild(cloneItem);

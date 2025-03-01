@@ -73,30 +73,12 @@
 
           <table id="table_setting">
             <tr class="fixedRow">
-              <th class="titleCell" rowspan="2" colspan="2">
+              <th class="titleCell" colspan="2">
                 名前
               </th>
 
               <th class="titleCell" colspan="5">
                 【つながり】コスト
-              </th>
-            </tr>
-
-            <tr class="fixedRow">
-              <th class="titleCell noRadius_right">
-                0→1
-              </th>
-              <th class="titleCell noRadius">
-                1→2
-              </th>
-              <th class="titleCell noRadius">
-                2→3
-              </th>
-              <th class="titleCell noRadius">
-                3→4
-              </th>
-              <th class="titleCell noRadius_left">
-                4→5
               </th>
             </tr>
 
@@ -187,21 +169,25 @@
         <input replace="name_self" class="input_name" value="" onchange="nameChange(this)">
       </td>
 
-      <td class="noRadius_right">
-        <input class="input_cost_0" type="number" value="" min="1">
-      </td>
-      <td class="noRadius">
-        <input class="input_cost_1" type="number" value="" min="1">
-      </td>
-      <td class="noRadius">
-        <input class="input_cost_2" type="number" value="" min="1">
-      </td>
-      <td class="noRadius">
-        <input class="input_cost_3" type="number" value="" min="1">
-      </td>
-      <td class="noRadius_left">
-        <input class="input_cost_4" type="number" value="" min="1">
-      </td>
+      <th class="titleCell noRadius_right">
+        0→1
+      </th>
+
+      <th class="titleCell noRadius">
+        1→2
+      </th>
+
+      <th class="titleCell noRadius">
+        2→3
+      </th>
+
+      <th class="titleCell noRadius">
+        3→4
+      </th>
+
+      <th class="titleCell noRadius_left">
+        4→5
+      </th>
     </tr>
   </template>
 
