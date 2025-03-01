@@ -50,6 +50,14 @@ h2
   margin-top: 12px;
 }
 
+/* 縦書き */
+.vertWright
+{
+  max-height: 170px;
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+}
+
 /* 角丸無し */
 .noRadius
 {
@@ -250,14 +258,6 @@ td > button
   position: sticky;
   top: 0;
   z-index: 1;
-}
-
-/* キャラクター名 */
-.connect_row .name_follow
-{
-  max-height: 170px;
-  writing-mode: vertical-lr;
-  text-orientation: upright;
 }
 
 /* つながりセル */
