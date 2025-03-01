@@ -73,8 +73,8 @@ function initialise () {
     // テーブル描画
     // --------------------------------------------------
 
-    // キャラクター設定
-    drawCharacterSetting();
+    // 設定
+    drawSetting();
 
     // つながり
     drawConnect();
@@ -122,9 +122,9 @@ function initialise () {
 }
 
 /**
- * テーブル描画：キャラクター設定
+ * テーブル描画：設定
  */
-function drawCharacterSetting() {
+function drawSetting() {
     // --------------------------------------------------
     // 通常行
     // --------------------------------------------------
@@ -180,7 +180,16 @@ function drawCharacterSetting() {
         // コスト
         let costIndex = 0;
         cloneItem.querySelectorAll('[class^="input_cost_"]').forEach(cost => {
+            // 初期値の設定
             cost.value = character.cost[costIndex];
+
+            // 変更イベント
+            cost.addEventListener(
+                "change",
+                ((character, costIndex) => (event) => {
+                    character.cost[costIndex] = Number(event.target.value);
+                })(character, costIndex)
+            );
 
             costIndex++
         });
