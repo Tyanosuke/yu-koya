@@ -53,13 +53,10 @@ h2
 /* 縦書き */
 .vertWright
 {
+  max-width: 100%;
   max-height: 170px;
   writing-mode: vertical-lr;
   text-orientation: upright;
-
-  display: inline-block;
-  overflow-wrap: break-word;
-  word-break: break-all;
 }
 
 /* 角丸無し */
@@ -177,9 +174,10 @@ button
 th,
 td
 {
+  min-width: 50px;
+  min-height: 50px;
   border: solid 2px var(--font-color);
   border-radius: 8px;
-
   padding: 8px;
 }
 
