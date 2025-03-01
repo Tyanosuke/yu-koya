@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+	  <script src="script.js"></script>
+    <title>ゆうやけこやけ 【つながり】管理ツール</title>
+  </head>
+
+  <body>
+
+    <h1>ゆうやけこやけ 【つながり】管理ツール</h1>
+
+    <div>
+
+      <!------------------------------------------------------>
+      <!-- 設定 -->
+      <!------------------------------------------------------>
+
+      <div class="area_setting">
+        <button class="buttonAcordion" onclick="buttonSettingPanel(this)">
+          設定
+        </button>
+
+        <div class="pannel_setting hidden">
+          <h2>
+            ココフォリア
+          </h2>
+
+          <table id="table_coco_setting">
+            <tr>
+              <th class="blank"></th>
+              <th class="titleCell">
+                ステータス名
+              </th>
+            </tr>
+
+            <tr>
+              <th class="titleCell">
+                夢
+              </th>
+              <td>
+                <input id="statusName_yume" value="夢">
+              </td>
+              <td class="blank">
+                ←例：カッコをつけるなら<span class="inputSample">［夢］</span>と入力する。
+              </td>
+            </tr>
+
+            <tr>
+              <th class="titleCell">
+                ふしぎ
+              </th>
+              <td>
+                <input id="statusName_fushigi" value="ふしぎ">
+              </td>
+            </tr>
+
+            <tr>
+              <th class="titleCell">
+                想い
+              </th>
+              <td>
+                <input id="statusName_omoi" value="想い">
+              </td>
+            </tr>
+          </table>
+
+          <h2>
+            キャラクター
+          </h2>
+
+          <table id="table_setting">
+            <tr class="fixedRow">
+              <th class="titleCell" rowspan="2" colspan="2">
+                名前
+              </th>
+
+              <th class="titleCell" colspan="5">
+                【つながり】コスト
+              </th>
+            </tr>
+
+            <tr class="fixedRow">
+              <th class="titleCell noRadius_right">
+                0→1
+              </th>
+              <th class="titleCell noRadius">
+                1→2
+              </th>
+              <th class="titleCell noRadius">
+                2→3
+              </th>
+              <th class="titleCell noRadius">
+                3→4
+              </th>
+              <th class="titleCell noRadius_left">
+                4→5
+              </th>
+            </tr>
+
+            <!-- AddPoint -->
+          </table>
+        </div>
+      </div>
+
+      <!------------------------------------------------------>
+      <!-- つながり -->
+      <!------------------------------------------------------>
+
+      <table id="table_connect">
+        <tr class="fixedRow stickyRow">
+          <th class="blank"></th>
+
+          <th class="titleCell" colspan="2">
+            <div class="connectType">
+              <span replace="name_self" class="name_self">あなた</span>
+              →
+              <span class="name_follow">あいて</span>
+            </div>
+          </th>
+
+          <th class="titleCell">
+            <div class="connectType">
+              <span class="name_follow">
+                あいて
+              </span>
+              →
+              <span replace="name_self" class="name_self">
+                あなた
+              </span>
+            </div>
+          </th>
+        </tr>
+
+        <!-- AddPoint -->
+      </table>
+    </div>
+
+    <!------------------------------------------------------>
+    <!-- スクロールボタン -->
+    <!------------------------------------------------------>
+
+    <button class="buttonScroll up transparent" onclick="buttonScrollUp()">
+      ▲
+    </button>
+
+    <button class="buttonScroll down" onclick="buttonScrollDown()">
+      ▼
+    </button>
+
+    <!------------------------------------------------------>
+    <!-- モーダル -->
+    <!------------------------------------------------------>
+    <div class="modal hidden" onclick="hideModal()">
+      <div class="window">
+        <div class="message">
+        （メッセージ）
+        </div>
+
+        <div class="buttons">
+          <button class="buttonYes">
+            はい
+          </button>
+
+          <button class="buttonNo" onclick="hideModal()">
+            いいえ
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <!------------------------------------------------------>
+  <!-- キャラクター設定 -->
+  <!------------------------------------------------------>
+
+  <!-- 行：あなた -->
+  <template id="temp_setting_row_self">
+    <tr>
+      <th class="titleCell name_self">
+        あなた
+      </th>
+
+      <td>
+        <input replace="name_self" class="input_name" value="" onchange="nameChange(this)">
+      </td>
+
+      <td class="noRadius_right">
+        <input class="input_cost_0" type="number" value="" min="1">
+      </td>
+      <td class="noRadius">
+        <input class="input_cost_1" type="number" value="" min="1">
+      </td>
+      <td class="noRadius">
+        <input class="input_cost_2" type="number" value="" min="1">
+      </td>
+      <td class="noRadius">
+        <input class="input_cost_3" type="number" value="" min="1">
+      </td>
+      <td class="noRadius_left">
+        <input class="input_cost_4" type="number" value="" min="1">
+      </td>
+    </tr>
+  </template>
+
+  <!-- 行：あいて -->
+  <template id="temp_setting_row_follow">
+    <tr>
+      <th class="titleCell name_follow">
+        あいて<span class="set_id">0</span>
+      </th>
+
+      <td>
+        <input class="input_name" replace="name_follow_" value="">
+      </td>
+
+      <td class="noRadius_right">
+        <input class="input_cost_0" type="number" value="" min="1">
+      </td>
+
+      <td class="noRadius">
+        <input class="input_cost_1" type="number" value="" min="1">
+      </td>
+
+      <td class="noRadius">
+        <input class="input_cost_2" type="number" value="" min="1">
+      </td>
+
+      <td class="noRadius">
+        <input class="input_cost_3" type="number" value="" min="1">
+      </td>
+
+      <td class="noRadius_left">
+        <input class="input_cost_4" type="number" value="" min="1">
+      </td>
+
+      <td>
+        <button class="removeCharacter">
+          削除
+        </button>
+      </td>
+    </tr>
+  </template>
+
+  <!-- 行 -->
+  <template id="temp_setting_row_last">
+    <tr>
+      <td class="">
+        <button class="addCharacter" onclick="buttonAdd()">
+          追加
+        </button>
+      </td>
+    </tr>
+  </template>
+
+  <!------------------------------------------------------>
+  <!-- つながり -->
+  <!------------------------------------------------------>
+
+  <!-- 行：キャラクター -->
+  <template id="temp_connect_row">
+    <tr class="connect_row">
+      <th name="name_follow_" class="titleCell name_follow">
+        <span replace="name_follow_">（キャラクター名）</span>
+      </th>
+
+      <td id="connect_to_">
+        <div class="connect before">
+          <input class="detail" placeholder="内容">
+
+          <input type="number" value="0" min="0" max="5" class="connect_before" onchange="calcFushigi()">
+        </div>
+
+        <div class="connect_arrow">▼</div>
+
+        <div class="connect after">
+          <input class="detail" placeholder="内容">
+
+          <input type="number" value="0" min="0" max="5" class="connect_value_to connect_after" onchange="calcFushigi()">
+        </div>
+      </td>
+
+      <td id="cost_">
+        <div class="cost">
+          <label>夢</label>
+          <span class="value">0</span>
+        </div>
+      </td>
+
+      <td id="connect_from_">
+        <div class="connect">
+          <input class="detail" placeholder="内容">
+
+          <div class="connect">
+            <input type="number" value="0" min="0" max="5" class="connect_value_from" onchange="calcOmoi()">
+          </div>
+        </div>
+      </td>
+    </tr>
+  </template>
+
+  <!-- 行：最後 -->
+  <template id="temp_connect_row_last">
+    <tr>
+      <th class="blank"></th>
+
+      <td class="arrow">
+        ▼
+      </td>
+
+      <td class="arrow">
+        ▼
+      </td>
+
+      <td class="arrow">
+        ▼
+      </td>
+    </tr>
+
+    <tr>
+      <th class="titleCell" rowspan="3">
+        幕間
+      </th>
+
+      <td>
+        <div class="flex total">
+          <label>獲得【ふしぎ】</label>
+          <span id="total_fushigi" class="value">0</span>
+          <button class="fade-button" onclick="buttonFushigi(this)">
+            コマンド出力
+            <div class="fade-overlay">
+              クリップボードに<br>
+              出力しました
+            </div>
+          </button>
+        </div>
+      </td>
+
+      <td>
+        <div class="flex total">
+          <label>消費［夢］</label>
+          <span id="total_yume" class="value">0</span>
+          <button class="fade-button" onclick="buttonYume(this)">
+            コマンド出力
+            <div class="fade-overlay">
+              クリップボードに<br>
+              出力しました
+            </div>
+          </button>
+        </div>
+      </td>
+
+      <td>
+        <div class="flex total">
+          <label>獲得【想い】</label>
+          <span id="total_omoi" class="value">0</span>
+          <button class="fade-button" onclick="buttonOmoi(this)">
+            コマンド出力
+            <div class="fade-overlay">
+              クリップボードに<br>
+              出力しました
+            </div>
+          </button>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <button class="button_footer fade-button" onclick="buttonOutputConnect(this)">
+            【つながり】表を出力
+          <div class="fade-overlay">
+            クリップボードに出力しました
+          </div>
+        </button>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <button class="button_footer fade-button" onclick="buttonConnectDecide(this)">
+            【つながり】を確定
+          <div class="fade-overlay">
+            入力を確定しました
+          </div>
+        </button>
+      </td>
+    </tr>
+  </template>
+
+</html>

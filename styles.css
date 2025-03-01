@@ -1,0 +1,467 @@
+/* 基本設定 */
+:root
+{
+  --font-color: rgb(64, 32, 12);
+  --bg-color: rgb(255, 240, 220);
+  --strong-color: rgb(50, 100, 200);
+  --sub-color: rgb(200, 100, 50);
+}
+
+/* フォント設定 */
+@font-face {
+  font-family: "MyFont";
+  src: url("./font/RiiTN_R.otf");
+}
+
+/* -------------------------------------------------- */
+/* 基本
+/* -------------------------------------------------- */
+
+/* 基本 */
+body
+{
+  padding: 10px;
+  background: var(--bg-color);
+  color: var(--font-color);
+}
+
+/* フォント */
+*
+{
+  font-family: "MyFont";
+}
+
+/* 見出し */
+h1,
+h2
+{
+  margin: 0;
+}
+h1
+{
+  margin-bottom: 12px;
+}
+h2
+{
+  margin-bottom: 4px;
+}
+* + h2
+{
+  margin-top: 12px;
+}
+
+/* 角丸無し */
+.noRadius
+{
+  border-radius: 0 !important;
+}
+.noRadius_left
+{
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+.noRadius_right
+{
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* 非表示 */
+.hidden
+{
+  display: none !important;
+}
+
+/* -------------------------------------------------- */
+/* 色
+/* -------------------------------------------------- */
+
+.name_self
+{
+  color: #ffc8c8 !important;
+}
+
+.name_follow
+{
+  color: #c8c8ff !important;
+}
+
+/* -------------------------------------------------- */
+/* インプット
+/* -------------------------------------------------- */
+
+/* 入力欄 */
+input
+{
+  box-sizing: border-box;
+  border: solid 2px #000;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+/* 入力例 */
+.inputSample
+{
+  background: #fff;
+  border-radius: 4px;
+  margin: 0 4px;
+  padding: 8px 4px;
+}
+
+/* -------------------------------------------------- */
+/* ボタン
+/* -------------------------------------------------- */
+
+/* ボタン */
+button
+{
+  background: var(--strong-color);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+
+  color: #fff;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+/* ボタンカバー */
+.fade-button
+{
+  width: 100%;
+  min-width: 150px;
+  height: 50px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fade-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+
+    color: #fff;
+    background-color: var(--sub-color);
+
+    transition: opacity 0.3s ease;
+}
+
+.fade-button.active .fade-overlay {
+    opacity: 1;
+}
+
+/* -------------------------------------------------- */
+/* テーブル
+/* -------------------------------------------------- */
+
+/* セル */
+th,
+td
+{
+  border: solid 2px var(--font-color);
+  border-radius: 8px;
+
+  padding: 8px;
+}
+
+/* セル内ボタン */
+td > button
+{
+  width: 100%;
+  height: 100%;
+}
+
+/* -------------------------------------------------- */
+/* キャラクター設定
+/* -------------------------------------------------- */
+
+/* エリア */
+.area_setting
+{
+  margin-bottom: 12px;
+}
+
+/* パネル */
+.pannel_setting
+{
+  background: var(--bg-color);
+  width: fit-content;
+  border: solid 2px var(--strong-color);
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  padding: 12px;
+}
+
+/* ボタン */
+.buttonAcordion
+{
+  padding: 8px 16px;
+
+  font-size: 15px;
+}
+.buttonAcordion.active
+{
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* タイトル行 */
+.titleRow
+{
+  display: flex;
+  margin-bottom: 8px;
+}
+
+/* 「閉じる」ボタン */
+.titleRow > button
+{
+  margin-left: auto;
+}
+
+/* 見出しセル */
+.titleCell
+{
+  color: var(--bg-color);
+  background: var(--font-color);
+}
+
+/* コスト */
+[class^="input_cost_"]
+{
+  width: 60px;
+
+  font-size: 20px;
+}
+
+/* -------------------------------------------------- */
+/* 【つながり】
+/* -------------------------------------------------- */
+
+/* 先頭行 */
+.stickyRow
+{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* キャラクター名 */
+.connect_row .name_follow
+{
+  max-height: 170px;
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+}
+
+/* つながりセル */
+.connect
+{
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  align-items: center;
+}
+
+/* 【つながり】強さ */
+.connect input
+{
+  width: 80px;
+  height: 50px;
+
+  font-size: 20px;
+  text-align: center;
+}
+
+/* 【つながり】内容 */
+.connect input.detail
+{
+  width: 100px;
+  height: 50px;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* 「あなた→あいて」：つながり */
+[id^="connect_to_"]
+{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* つながり：▼ */
+.connect_arrow
+{
+  margin: 12px 0;
+
+  font-size: 20px;
+  text-align: center;
+}
+
+/* ［夢］コスト */
+[id^="cost_"]
+{
+  border-radius: 0 8px 8px 0;
+}
+.cost
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #fff;
+  background: #802020;
+  border-radius: 8px;
+  margin: 0 12px;
+  padding: 8px 16px;
+}
+.cost > .value
+{
+  margin-left: auto;
+  font-size: 30px;
+  font-weight: bold;
+  margin-left: auto;
+}
+
+/* 線無し */
+.blank
+{
+  border-color: transparent !important;
+}
+
+/* 幕間：▼ */
+.arrow
+{
+  border-color: transparent !important;
+
+  font-size: 30px;
+  text-align: center;
+}
+
+/* 合計 */
+.total
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 150px;
+
+    text-align: center;
+}
+.total > .value
+{
+  font-size: 50px;
+  font-weight: bold;
+}
+
+/* -------------------------------------------------- */
+/* スクロールボタン
+/* -------------------------------------------------- */
+
+/* ボタン分の空き */
+body
+{
+  padding-bottom: 62px;
+}
+
+/* エリア */
+.buttonScroll
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  opacity: 0.5;
+
+  color: var(--strong-color);
+  background: none;
+  border: solid 3px var(--strong-color);
+  border-radius: 50px;
+
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+
+  font-size: 30px;
+
+  transition: opacity 0.3s;
+}
+.buttonScroll:hover
+{
+  opacity: 1;
+}
+.buttonScroll.transparent
+{
+  opacity: 0 !important;
+  z-index: -1;
+}
+
+/* -------------------------------------------------- */
+/* モーダル
+/* -------------------------------------------------- */
+
+/* 背景 */
+.modal
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgb(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+/* ウィンドウ */
+.modal > .window
+{
+  min-width: 25vw;
+  background: var(--bg-color);
+  border: solid 2px var(--font-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+/* メッセージ */
+.modal > .window > .message
+{
+  background: var(--font-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  padding: 8px;
+
+  color: var(--bg-color);
+  line-height: calc(1em + 10px);
+  text-align: center;
+}
+
+/* ボタン */
+.modal > .window > .buttons
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px
+}
+.modal > .window > .buttons > button
+{
+  min-width: 100px;
+
+  font-size: 25px;
+}
+
+/* 「はい」ボタン */
+.buttonYes {
+  background-color: var(--sub-color);
+}
