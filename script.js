@@ -477,10 +477,21 @@ function buttonOutputConnect ($this) {
         text += "\r";
 
         const name = row.querySelector(".name_follow > span").textContent;
-        const beforeDetail = row.querySelector(".connect.before > input.detail").value;
+
+        let beforeDetail = row.querySelector(".connect.before > input.detail").value;
+        if (beforeDetail == "") {
+            beforeDetail = "未入力"
+        }
+
         const beforeValue = row.querySelector(".connect.before > .connect_before").value;
-        const afterDetail = row.querySelector(".connect.after > input.detail").value;
+
+        let afterDetail = row.querySelector(".connect.after > input.detail").value;
+        if (afterDetail == "") {
+            afterDetail = "未入力"
+        }
+
         const afterValue = row.querySelector(".connect.after > .connect_after").value;
+
         const cost = row.querySelector(".cost > .value").textContent;
         text += "●" + name + " / " + beforeDetail + ":" + beforeValue + " → " + afterDetail + ":" + afterValue + " (夢 -" + cost + ")";
     });
