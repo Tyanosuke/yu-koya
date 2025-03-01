@@ -179,8 +179,7 @@ td
   padding: 8px;
 }
 
-/* セル内要素 */
-th > span,
+/* セル内ボタン */
 td > button
 {
   width: 100%;
