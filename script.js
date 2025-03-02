@@ -358,8 +358,24 @@ function getStatusName (name) {
     return document.getElementById("statusName_" + name).value;
 }
 
+/**
+ * 【強いつながり】判定
+ */
+function checkTsuyoiTsunagari () {
+    document.querySelectorAll(".connect_row").forEach(row => {
+        // 互いの【つながり】の強さが５の場合
+        if (
+            row.querySelector(".connect_before").value == "5"
+            && row.querySelector(".connect_value_from").value == "5"
+        ) {
+            // 【強いつながり】を表示する
+            row.querySelector(".strongConnect").classList.remove("hidden");
+        }
+    });
+}
+
 // ====================================================================================================
-// ボタン
+// ボタンイベント
 // ====================================================================================================
 
 /**
@@ -520,11 +536,9 @@ function buttonOutputConnect ($this) {
  * 「【つながり】を確定」ボタン
  */
 function processConnectDecide ($this) {
-    // 「クリップボードにコピーしました」表示
+    // 「入力を確定しました」表示
     buttonFadeEvent($this);
 
-    // 文字列の生成
-    let text = "【つながり】\r";
     document.querySelectorAll(".connect_row").forEach(row => {
         const afterDetail = row.querySelector(".connect.after > input.detail").value;
         row.querySelector(".connect.before > input.detail").value = afterDetail;
@@ -535,6 +549,9 @@ function processConnectDecide ($this) {
 
     // 計算
     calcFushigi();
+
+    // 強いつながり
+    checkTsuyoiTsunagari();
 }
 
 /**

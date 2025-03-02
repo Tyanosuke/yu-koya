@@ -332,6 +332,31 @@ td > button
   margin-left: auto;
 }
 
+/* つよいつながり */
+.strongConnect
+{
+  text-align: center;
+}
+.strongConnect > .text_main
+{
+  background: #808020;
+  border-radius: 8px;
+  margin: 0 12px;
+  padding: 8px 16px;
+
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+.strongConnect > .text_sub
+{
+  margin-top: 12px;
+
+  color: #808020;
+  font-weight: bold;
+}
+
 /* 線無し */
 .blank
 {
