@@ -72,15 +72,39 @@
           </h2>
 
           <table id="table_setting">
-            <tr class="fixedRow">
-              <th class="titleCell" colspan="2">
-                名前
-              </th>
+            <tbody class="stickyRow">
+              <tr class="fixedRow">
+                <th class="titleCell" rowspan="2" colspan="2">
+                  名前
+                </th>
 
-              <th class="titleCell" colspan="5">
-                【つながり】コスト
-              </th>
-            </tr>
+                <th class="titleCell" colspan="5">
+                  【つながり】コスト
+                </th>
+              </tr>
+
+              <tr class="fixedRow">
+                <th class="titleCell noRadius_right">
+                  0→1
+                </th>
+
+                <th class="titleCell noRadius">
+                  1→2
+                </th>
+
+                <th class="titleCell noRadius">
+                  2→3
+                </th>
+
+                <th class="titleCell noRadius">
+                  3→4
+                </th>
+
+                <th class="titleCell noRadius_left">
+                  4→5
+                </th>
+              </tr>
+            </tbody>
 
             <!-- AddPoint -->
           </table>
@@ -168,26 +192,6 @@
       <td>
         <input replace="name_self" class="input_name" value="" onchange="nameChange(this)">
       </td>
-
-      <th class="titleCell noRadius_right">
-        0→1
-      </th>
-
-      <th class="titleCell noRadius">
-        1→2
-      </th>
-
-      <th class="titleCell noRadius">
-        2→3
-      </th>
-
-      <th class="titleCell noRadius">
-        3→4
-      </th>
-
-      <th class="titleCell noRadius_left">
-        4→5
-      </th>
     </tr>
   </template>
 
