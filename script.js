@@ -83,15 +83,21 @@ function initialise () {
     // キャラクター名入力欄：フォーカスアウト
     // --------------------------------------------------
 
+    let index = 0;
     document.querySelectorAll('input.input_name').forEach(target => {
         // キャラクター名変更イベント
-        nameChange(target);
+        nameChange(target, index);
 
         // フォーカスアウト時にもイベント設定
-        target.addEventListener("blur", (event) => {
-            // ＰＣ名の変更
-            nameChange(event.target);
-        })
+        target.addEventListener(
+            "blur",
+            ((index) => (event) => {
+                // ＰＣ名の変更
+                nameChange(event.target, index);
+            })(index)
+        )
+
+        index++;
     });
 
     // --------------------------------------------------
@@ -359,7 +365,10 @@ function getStatusName (name) {
 /**
  * キャラクター名の変更
  */
-function nameChange ($this) {
+function nameChange ($this, index) {
+    // キャラクターリストへ反映
+    listCharacter[index].name = $this.value;
+
     // 【つながり】テーブルへ反映
     document.querySelectorAll('span[replace="' + $this.getAttribute("replace") + '"]').forEach(target => {
         target.textContent = $this.value;
@@ -389,12 +398,6 @@ function processDelete (id) {
 
     // 初期化
     initialise();
-}
-
-/**
- * キャラクター「削除」ボタン
- */
-function buttonDelete (id) {
 }
 
 /**
@@ -561,7 +564,8 @@ function showModalDelete (id) {
     const modal = document.querySelector(".modal");
 
     let name = document.querySelector('span[replace="name_follow_' + id + '"]').textContent;
-    let text = '<span class="name_follow">' + name + '</span>を削除しますか？';
+    let text = '<span class="name_follow">' + name + '</span>を削除しますか？<br>'
+        + '（【つながり】が全て空欄になります）';
     modal.querySelector(".message").innerHTML = text;
 
     const oldElement = modal.querySelector(".buttonYes")
