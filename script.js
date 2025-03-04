@@ -25,26 +25,32 @@ let listCharacter = [
     {
         name: "あなた",
         cost: null,
+        connect: [],
     },
     {
         name: "町",
         cost: null,
+        connect: [],
     },
     {
         name: "なかま1",
         cost: null,
+        connect: [],
     },
     {
         name: "なかま2",
         cost: null,
+        connect: [],
     },
     {
         name: "なかま3",
         cost: null,
+        connect: [],
     },
     {
         name: "なかま4",
         cost: null,
+        connect: [],
     },
 ]
 
@@ -56,9 +62,16 @@ let listCharacter = [
  * ロード時
  */
 window.onload = function() {
-    // コスト設定
+    // データ設定
+    let i = 0;
     listCharacter.forEach(target => {
+        // コスト設定
         target.cost = [...listCostDefault];
+
+        // つながり
+        setConnect(i);
+
+        i++;
     })
 
     // 初期化
@@ -262,6 +275,24 @@ function drawConnect () {
                 item.setAttribute(keyName, item.getAttribute(keyName) + index);
             });
 
+            // --------------------------------------------------
+            // 【つながり】
+            // --------------------------------------------------
+
+             let to = listCharacter[0];
+             let from = listCharacter[index];
+
+            cloneItem.querySelector(".connect.before > input.detail").value = to.connect[index].before.name;
+            cloneItem.querySelector(".connect.before > input.value").value = to.connect[index].before.value;
+
+            cloneItem.querySelector(".connect.after > input.detail").value = to.connect[index].after.name;
+            cloneItem.querySelector(".connect.after > input.value").value = to.connect[index].after.value;
+
+            cloneItem.querySelector(".connect.from > input.detail").value = from.connect[0].after.name;
+            cloneItem.querySelector(".connect.from > input.value").value = from.connect[0].after.value;
+
+            // --------------------------------------------------
+
             // 要素を追加する
             addPoint.appendChild(cloneItem);
         }
@@ -286,6 +317,33 @@ function drawConnect () {
 // ====================================================================================================
 // ファンクション
 // ====================================================================================================
+
+/**
+ * つながりデータ設定
+ */
+function setConnect (i) {
+    for (let j = 0; j < listCharacter.length; j++) {
+        let connect = null;
+
+        if (
+            (i == 0 && j > 0)
+            || (i > 0 && j == 0)
+        ) {
+            connect = {
+                before: {
+                    name: "",
+                    value: 0,
+                },
+                after: {
+                    name: "",
+                    value: 0,
+                }
+            };
+        }
+
+        listCharacter[i].connect.push(connect)
+    }
+}
 
 /**
  * 計算：ふしぎ（＆夢）
@@ -374,6 +432,28 @@ function checkTsuyoiTsunagari () {
     });
 }
 
+/**
+ * 追加・削除用、データ一時保存
+ */
+function tempSaveData () {
+    let to = listCharacter[0];
+    let index = 1;
+    document.querySelectorAll(".connect_row").forEach(target => {
+        let from = listCharacter[index];
+
+        to.connect[index].before.name = target.querySelector(".connect.before > input.detail").value;
+        to.connect[index].before.value = target.querySelector(".connect.before > input.value").value;
+
+        to.connect[index].after.name = target.querySelector(".connect.after > input.detail").value;
+        to.connect[index].after.value = target.querySelector(".connect.after > input.value").value;
+
+        from.connect[0].after.name = target.querySelector(".connect.from > input.detail").value;
+        from.connect[0].after.value = target.querySelector(".connect.from > input.value").value;
+
+        index++;
+    });
+}
+
 // ====================================================================================================
 // ボタンイベント
 // ====================================================================================================
@@ -381,13 +461,13 @@ function checkTsuyoiTsunagari () {
 /**
  * キャラクター名の変更
  */
-function nameChange ($this, index) {
+function nameChange (event, index) {
     // キャラクターリストへ反映
-    listCharacter[index].name = $this.value;
+    listCharacter[index].name = event.value;
 
     // 【つながり】テーブルへ反映
-    document.querySelectorAll('span[replace="' + $this.getAttribute("replace") + '"]').forEach(target => {
-        target.textContent = $this.value;
+    document.querySelectorAll('span[replace="' + event.getAttribute("replace") + '"]').forEach(target => {
+        target.textContent = event.value;
     });
 }
 
@@ -395,10 +475,27 @@ function nameChange ($this, index) {
  * キャラクター「追加」ボタン
  */
 function buttonAdd () {
-    // 削除
-    listCharacter.push({
-        name: "なかま" + listCharacter.length,
+    // 一時保存
+    tempSaveData();
+
+    // 末尾に新キャラクターを追加
+    const addId = listCharacter.push({
+        name: "なかま",
         cost: [...listCostDefault],
+        connect: [],
+    });
+    setConnect(addId - 1);
+
+    // 「あなた」のつながり追加
+    listCharacter[0].connect.push({
+        before: {
+            name: "",
+            value: 0,
+        },
+        after: {
+            name: "",
+            value: 0,
+        }
     });
 
     // 初期化
@@ -409,8 +506,14 @@ function buttonAdd () {
  * キャラクター「削除」ボタン
  */
 function processDelete (id) {
-    // 削除
+    // 一時保存
+    tempSaveData();
+
+    // 指定キャラクターを削除
     listCharacter.splice(id, 1);
+
+    // 「あなた」のつながり削除
+    listCharacter[0].connect.splice(id, 1);
 
     // 初期化
     initialise();
@@ -419,9 +522,9 @@ function processDelete (id) {
 /**
  * キャラクター設定パネルの開閉
  */
-function buttonSettingPanel ($this) {
+function buttonSettingPanel (event) {
     // ボタンの見た目変更
-    $this.classList.toggle("active");
+    event.classList.toggle("active");
 
     // パネルの開閉
     document.querySelector('.pannel_setting').classList.toggle("hidden");
@@ -430,24 +533,24 @@ function buttonSettingPanel ($this) {
 /**
  * 「クリップボードにコピーしました」表示
  */
-function buttonFadeEvent ($this) {
-    if ($this == null) {
+function buttonFadeEvent (event) {
+    if (event == null) {
         return;
     }
 
     // 見た目変更
-    $this.classList.add("active");
+    event.classList.add("active");
     setTimeout(() => {
-        $this.classList.remove("active");
+        event.classList.remove("active");
     }, 1000);
 }
 
 /**
  * コマンド出力：ふしぎ
  */
-function buttonFushigi ($this) {
+function buttonFushigi (event) {
     // 「クリップボードにコピーしました」表示
-    buttonFadeEvent($this);
+    buttonFadeEvent(event);
 
     // クリップボードにコピー
     const value = document.getElementById("total_fushigi").textContent;
@@ -457,9 +560,9 @@ function buttonFushigi ($this) {
 /**
  * コマンド出力：夢
  */
-function buttonYume ($this) {
+function buttonYume (event) {
     // 「クリップボードにコピーしました」表示
-    buttonFadeEvent($this);
+    buttonFadeEvent(event);
 
     // クリップボードにコピー
     const value = document.getElementById("total_yume").textContent;
@@ -469,9 +572,9 @@ function buttonYume ($this) {
 /**
  * コマンド出力：想い
  */
-function buttonOmoi ($this) {
+function buttonOmoi (event) {
     // 「クリップボードにコピーしました」表示
-    buttonFadeEvent($this);
+    buttonFadeEvent(event);
 
     // クリップボードにコピー
     const value = document.getElementById("total_omoi").textContent;
@@ -499,9 +602,9 @@ function buttonScrollDown () {
 /**
  * 「【つながり】表を出力」ボタン
  */
-function buttonOutputConnect ($this) {
+function buttonOutputConnect (event) {
     // 「クリップボードにコピーしました」表示
-    buttonFadeEvent($this);
+    buttonFadeEvent(event);
 
     // 文字列の生成
     let text = "【つながり】";
@@ -535,9 +638,9 @@ function buttonOutputConnect ($this) {
 /**
  * 「【つながり】を確定」ボタン
  */
-function processConnectDecide ($this) {
+function processConnectDecide (event) {
     // 「入力を確定しました」表示
-    buttonFadeEvent($this);
+    buttonFadeEvent(event);
 
     document.querySelectorAll(".connect_row").forEach(row => {
         const afterDetail = row.querySelector(".connect.after > input.detail").value;
@@ -557,8 +660,8 @@ function processConnectDecide ($this) {
 /**
  * 「【つながり】を確定」ボタン
  */
-function buttonConnectDecide ($this) {
-    showModalDecide($this);
+function buttonConnectDecide (event) {
+    showModalDecide(event);
 }
 
 // ====================================================================================================
@@ -581,8 +684,7 @@ function showModalDelete (id) {
     const modal = document.querySelector(".modal");
 
     let name = document.querySelector('span[replace="name_follow_' + id + '"]').textContent;
-    let text = '<span class="name_follow">' + name + '</span>を削除しますか？<br>'
-        + '（【つながり】が全て空欄になります）';
+    let text = '<span class="name_follow">' + name + '</span>を削除しますか？';
     modal.querySelector(".message").innerHTML = text;
 
     const oldElement = modal.querySelector(".buttonYes")
@@ -601,7 +703,7 @@ function showModalDelete (id) {
 /**
  * モーダル表示：「【つながり】を確定」ボタン
  */
-function showModalDecide ($this) {
+function showModalDecide (event) {
     const modal = document.querySelector(".modal");
 
     let text
@@ -614,9 +716,9 @@ function showModalDecide ($this) {
     oldElement.parentNode.replaceChild(newElement, oldElement);
     newElement.addEventListener(
         "click",
-        (($this) => () => {
-            processConnectDecide($this);
-        })($this)
+        ((event) => () => {
+            processConnectDecide(event);
+        })(event)
     )
 
     modal.classList.remove("hidden");

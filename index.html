@@ -3,8 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="styles.css" />
+
 	  <script src="script.js"></script>
+
     <title>ゆうやけこやけ 【つながり】管理ツール</title>
   </head>
 
@@ -259,16 +263,14 @@
       <td id="connect_to_">
         <div class="connect before">
           <input class="detail" placeholder="内容">
-
-          <input type="number" value="0" min="0" max="5" class="connect_before" onchange="calcFushigi()">
+          <input type="number" value="0" min="0" max="5" class="value connect_before" onchange="calcFushigi()">
         </div>
 
         <div class="connect_arrow">▼</div>
 
         <div class="connect after">
           <input class="detail" placeholder="内容">
-
-          <input type="number" value="0" min="0" max="5" class="connect_value_to connect_after" onchange="calcFushigi()">
+          <input type="number" value="0" min="0" max="5" class="value connect_after connect_value_to" onchange="calcFushigi()">
         </div>
       </td>
 
@@ -280,12 +282,9 @@
       </td>
 
       <td id="connect_from_">
-        <div class="connect">
+        <div class="connect from">
           <input class="detail" placeholder="内容">
-
-          <div class="connect">
-            <input type="number" value="0" min="0" max="5" class="connect_value_from" onchange="calcOmoi()">
-          </div>
+          <input type="number" value="0" min="0" max="5" class="value connect_value_from" onchange="calcOmoi()">
         </div>
       </td>
 
