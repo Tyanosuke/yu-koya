@@ -74,28 +74,28 @@ window.onload = function() {
         errorFlag = true;
     }
 
-    if (errorFlag || !localData) {
-        return;
+    if (!errorFlag && localData) {
+        const modal = document.querySelector(".modal");
+
+        let text = '以前の入力内容を復元しますか？';
+        modal.querySelector(".message").innerHTML = text;
+
+        const oldElement = modal.querySelector(".buttonYes")
+        const newElement = oldElement.cloneNode(true);
+        oldElement.parentNode.replaceChild(newElement, oldElement);
+        newElement.addEventListener(
+            "click",
+            (() => () => {
+                // 以前のデータを取得
+                listCharacter = localData;
+
+                // 初期化
+                initialise();
+            })()
+        )
+
+        modal.classList.remove("hidden");
     }
-
-    const modal = document.querySelector(".modal");
-
-    let text = '以前の入力内容を復元しますか？';
-    modal.querySelector(".message").innerHTML = text;
-
-    const oldElement = modal.querySelector(".buttonYes")
-    const newElement = oldElement.cloneNode(true);
-    oldElement.parentNode.replaceChild(newElement, oldElement);
-    newElement.addEventListener(
-        "click",
-        (() => () => {
-            listCharacter = localData;
-            // 初期化
-            initialise();
-        })()
-    )
-
-    modal.classList.remove("hidden");
 
     // --------------------------------------------------
     // データ設定
