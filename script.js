@@ -62,7 +62,45 @@ let listCharacter = [
  * ロード時
  */
 window.onload = function() {
+    // --------------------------------------------------
+    // 復元
+    // --------------------------------------------------
+
+    let errorFlag = false;
+    let localData;
+    try {
+        localData = JSON.parse(localStorage.getItem("data"));
+    } catch {
+        errorFlag = true;
+    }
+
+    if (errorFlag || !localData) {
+        return;
+    }
+
+    const modal = document.querySelector(".modal");
+
+    let text = '以前の入力内容を復元しますか？';
+    modal.querySelector(".message").innerHTML = text;
+
+    const oldElement = modal.querySelector(".buttonYes")
+    const newElement = oldElement.cloneNode(true);
+    oldElement.parentNode.replaceChild(newElement, oldElement);
+    newElement.addEventListener(
+        "click",
+        (() => () => {
+            listCharacter = localData;
+            // 初期化
+            initialise();
+        })()
+    )
+
+    modal.classList.remove("hidden");
+
+    // --------------------------------------------------
     // データ設定
+    // --------------------------------------------------
+
     let i = 0;
     listCharacter.forEach(target => {
         // コスト設定
@@ -74,9 +112,13 @@ window.onload = function() {
         i++;
     })
 
+    // --------------------------------------------------
     // 初期化
+    // --------------------------------------------------
+
     initialise();
 }
+
 
 /**
  * 初期化
@@ -348,7 +390,7 @@ function setConnect (i) {
 /**
  * 計算：ふしぎ（＆夢）
  */
-function calcFushigi () {
+function calcFushigi (save = true) {
     // ふしぎ
     let value = 0;
     document.querySelectorAll(".connect_value_to").forEach(target => {
@@ -358,13 +400,13 @@ function calcFushigi () {
     document.getElementById("total_fushigi").textContent = value;
 
     // 夢
-    calcYume();
+    calcYume(save);
 }
 
 /**
  * 計算：夢
  */
-function calcYume () {
+function calcYume (save) {
     // --------------------------------------------------
     // つながりから夢コストを計算
     // --------------------------------------------------
@@ -395,18 +437,29 @@ function calcYume () {
     })
 
     document.getElementById("total_yume").textContent = value;
+
+    // --------------------------------------------------
+    // ローカルストレージに保存
+    // --------------------------------------------------
+
+    if (save) {
+        localSave();
+    }
 }
 
 /**
  * 計算：想い
  */
 function calcOmoi () {
+    // 計算
     let value = 0;
     document.querySelectorAll(".connect_value_from").forEach(target => {
         value += Number(target.value);
     })
-
     document.getElementById("total_omoi").textContent = value;
+
+    // ローカルストレージに保存
+    localSave();
 }
 
 /**
@@ -454,6 +507,17 @@ function tempSaveData () {
     });
 }
 
+/**
+ * ローカルストレージに保存
+ */
+function localSave () {
+    // 入力内容を保存
+    tempSaveData();
+
+    // ローカルストレージに保存
+    localStorage.setItem("data", JSON.stringify(listCharacter));
+}
+
 // ====================================================================================================
 // ボタンイベント
 // ====================================================================================================
@@ -469,6 +533,9 @@ function nameChange (event, index) {
     document.querySelectorAll('span[replace="' + event.getAttribute("replace") + '"]').forEach(target => {
         target.textContent = event.value;
     });
+
+    // ローカルストレージに保存
+    localSave();
 }
 
 /**
@@ -500,23 +567,9 @@ function buttonAdd () {
 
     // 初期化
     initialise();
-}
 
-/**
- * キャラクター「削除」ボタン
- */
-function processDelete (id) {
-    // 一時保存
+    // さらに一時保存
     tempSaveData();
-
-    // 指定キャラクターを削除
-    listCharacter.splice(id, 1);
-
-    // 「あなた」のつながり削除
-    listCharacter[0].connect.splice(id, 1);
-
-    // 初期化
-    initialise();
 }
 
 /**
@@ -638,28 +691,6 @@ function buttonOutputConnect (event) {
 /**
  * 「【つながり】を確定」ボタン
  */
-function processConnectDecide (event) {
-    // 「入力を確定しました」表示
-    buttonFadeEvent(event);
-
-    document.querySelectorAll(".connect_row").forEach(row => {
-        const afterDetail = row.querySelector(".connect.after > input.detail").value;
-        row.querySelector(".connect.before > input.detail").value = afterDetail;
-
-        const afterValue = row.querySelector(".connect.after > .connect_after").value;
-        row.querySelector(".connect.before > .connect_before").value = afterValue;
-    });
-
-    // 計算
-    calcFushigi();
-
-    // 強いつながり
-    checkTsuyoiTsunagari();
-}
-
-/**
- * 「【つながり】を確定」ボタン
- */
 function buttonConnectDecide (event) {
     showModalDecide(event);
 }
@@ -701,6 +732,26 @@ function showModalDelete (id) {
 }
 
 /**
+ * キャラクター「削除」ボタン
+ */
+function processDelete (id) {
+    // 一時保存
+    tempSaveData();
+
+    // 指定キャラクターを削除
+    listCharacter.splice(id, 1);
+
+    // 「あなた」のつながり削除
+    listCharacter[0].connect.splice(id, 1);
+
+    // 初期化
+    initialise();
+
+    // さらに一時保存
+    tempSaveData();
+}
+
+/**
  * モーダル表示：「【つながり】を確定」ボタン
  */
 function showModalDecide (event) {
@@ -722,4 +773,29 @@ function showModalDecide (event) {
     )
 
     modal.classList.remove("hidden");
+}
+
+/**
+ * 「【つながり】を確定」ボタン
+ */
+function processConnectDecide (event) {
+    // 「入力を確定しました」表示
+    buttonFadeEvent(event);
+
+    document.querySelectorAll(".connect_row").forEach(row => {
+        const afterDetail = row.querySelector(".connect.after > input.detail").value;
+        row.querySelector(".connect.before > input.detail").value = afterDetail;
+
+        const afterValue = row.querySelector(".connect.after > .connect_after").value;
+        row.querySelector(".connect.before > .connect_before").value = afterValue;
+    });
+
+    // 計算
+    calcFushigi(false);
+
+    // 強いつながり
+    checkTsuyoiTsunagari();
+
+    // ローカルストレージに保存
+    localSave();
 }

@@ -75,6 +75,13 @@ h2
   border-bottom-right-radius: 0 !important;
 }
 
+/* フレックス */
+.flex
+{
+  display: flex;
+  gap: 12px
+}
+
 /* 非表示 */
 .hidden
 {
@@ -133,6 +140,13 @@ button
   white-space: nowrap;
 
   cursor: pointer;
+}
+
+/* ボタン：非活性 */
+button:disabled
+{
+  background-color: #888;
+  cursor: default;
 }
 
 /* ボタンカバー */
