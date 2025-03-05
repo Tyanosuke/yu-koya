@@ -91,6 +91,9 @@ window.onload = function() {
 
                 // 初期化
                 initialise();
+
+                // モーダルを非表示
+                hideModal();
             })()
         )
 
@@ -726,7 +729,11 @@ function showModalDelete (id) {
     newElement.addEventListener(
         "click",
         ((id) => () => {
+            // 処理
             processDelete(id);
+
+            // モーダルを非表示
+            hideModal();
         })(id)
     )
 
@@ -770,7 +777,11 @@ function showModalDecide (event) {
     newElement.addEventListener(
         "click",
         ((event) => () => {
+            // 処理
             processConnectDecide(event);
+
+            // モーダルを非表示
+            hideModal();
         })(event)
     )
 
