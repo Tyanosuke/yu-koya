@@ -161,26 +161,6 @@
       ▼
     </button>
 
-    <!------------------------------------------------------>
-    <!-- モーダル -->
-    <!------------------------------------------------------>
-    <div class="modal hidden">
-      <div class="window">
-        <div class="message">
-        （メッセージ）
-        </div>
-
-        <div class="buttons">
-          <button class="buttonYes">
-            はい
-          </button>
-
-          <button class="buttonNo" onclick="hideModal()">
-            いいえ
-          </button>
-        </div>
-      </div>
-    </div>
   </body>
 
   <!------------------------------------------------------>
@@ -380,7 +360,7 @@
 
     <tr>
       <td colspan="2">
-        <button class="button_footer fade-button" onclick="buttonConnectDecide(this)">
+        <button class="button_footer fade-button" onclick="showModalDecide(this)">
             【つながり】を確定
           <div class="fade-overlay">
             入力を確定しました
@@ -388,6 +368,30 @@
         </button>
       </td>
     </tr>
+  </template>
+
+  <!------------------------------------------------------>
+  <!-- モーダル -->
+  <!------------------------------------------------------>
+
+  <template id="temp_modal">
+    <div class="modal">
+      <div class="window">
+        <div class="message">
+        （メッセージ）
+        </div>
+
+        <div class="buttons">
+          <button class="buttonYes">
+            はい
+          </button>
+
+          <button class="buttonNo" onclick="hideModal()">
+            いいえ
+          </button>
+        </div>
+      </div>
+    </div>
   </template>
 
 </html>

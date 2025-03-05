@@ -63,44 +63,6 @@ let listCharacter = [
  */
 window.onload = function() {
     // --------------------------------------------------
-    // 復元
-    // --------------------------------------------------
-
-    let errorFlag = false;
-    let localData;
-    try {
-        localData = JSON.parse(localStorage.getItem("data"));
-    } catch {
-        errorFlag = true;
-    }
-
-    if (!errorFlag && localData) {
-        const modal = document.querySelector(".modal");
-
-        let text = '以前の入力内容を復元しますか？';
-        modal.querySelector(".message").innerHTML = text;
-
-        const oldElement = modal.querySelector(".buttonYes")
-        const newElement = oldElement.cloneNode(true);
-        oldElement.parentNode.replaceChild(newElement, oldElement);
-        newElement.addEventListener(
-            "click",
-            (() => () => {
-                // 以前のデータを取得
-                listCharacter = localData;
-
-                // 初期化
-                initialise();
-
-                // モーダルを非表示
-                hideModal();
-            })()
-        )
-
-        modal.classList.remove("hidden");
-    }
-
-    // --------------------------------------------------
     // データ設定
     // --------------------------------------------------
 
@@ -120,6 +82,53 @@ window.onload = function() {
     // --------------------------------------------------
 
     initialise();
+
+    // --------------------------------------------------
+    // 復元
+    // --------------------------------------------------
+
+    // ローカルストレージからデータを取得
+    let errorFlag = false;
+    let localData;
+    try {
+        localData = JSON.parse(localStorage.getItem("data"));
+    } catch {
+        errorFlag = true;
+    }
+
+    // データが正常に取得でき、ローカルストレージと画面上のデータが異なる場合
+    if (
+        !errorFlag
+        && localData
+        && JSON.stringify(listCharacter) != JSON.stringify(localData)
+    ) {
+        // モーダルを取得
+        const templateItem = document.getElementById("temp_modal");
+        let modal = templateItem.content.cloneNode(true);
+
+        // メッセージ
+        let text = '以前の入力内容を復元しますか？';
+        modal.querySelector(".message").innerHTML = text;
+
+        // 「はい」ボタン
+        const buttonYed = modal.querySelector(".buttonYes")
+        buttonYed.addEventListener(
+            "click",
+            (() => () => {
+                // 以前のデータを取得
+                listCharacter = localData;
+
+                // 初期化
+                initialise();
+
+                // モーダルを非表示
+                hideModal();
+            })()
+        )
+
+        // モーダルを表示
+        document.body.appendChild(modal);
+    }
 }
 
 
@@ -377,11 +386,11 @@ function setConnect (i) {
             connect = {
                 before: {
                     name: "",
-                    value: 0,
+                    value: "0",
                 },
                 after: {
                     name: "",
-                    value: 0,
+                    value: "0",
                 }
             };
         }
@@ -492,20 +501,28 @@ function checkTsuyoiTsunagari () {
  * 追加・削除用、データ一時保存
  */
 function tempSaveData () {
+    // あなた
     let to = listCharacter[0];
+
+    // あいて分ループ
     let index = 1;
     document.querySelectorAll(".connect_row").forEach(target => {
+        // あいて
         let from = listCharacter[index];
 
+        // あなたからの【つながり】：前
         to.connect[index].before.name = target.querySelector(".connect.before > input.detail").value;
         to.connect[index].before.value = target.querySelector(".connect.before > input.value").value;
 
+        // あなたからの【つながり】：後
         to.connect[index].after.name = target.querySelector(".connect.after > input.detail").value;
         to.connect[index].after.value = target.querySelector(".connect.after > input.value").value;
 
+        // あいてからの【つながり】
         from.connect[0].after.name = target.querySelector(".connect.from > input.detail").value;
         from.connect[0].after.value = target.querySelector(".connect.from > input.value").value;
 
+        // 次のあいてへ
         index++;
     });
 }
@@ -562,11 +579,11 @@ function buttonAdd () {
     listCharacter[0].connect.push({
         before: {
             name: "",
-            value: 0,
+            value: "0",
         },
         after: {
             name: "",
-            value: 0,
+            value: "0",
         }
     });
 
@@ -643,18 +660,20 @@ function buttonOmoi (event) {
  * スクロールボタン：上
  */
 function buttonScrollUp () {
-  window.scroll({
-    top: 0,
-  });
+    // 最上段にスクロール
+    window.scroll({
+        top: 0,
+    });
 }
 
 /**
  * スクロールボタン：下
  */
 function buttonScrollDown () {
-  window.scroll({
-    top: document.body.scrollHeight,
-  });
+    // 最下段にスクロール
+    window.scroll({
+        top: document.body.scrollHeight,
+    });
 }
 
 /**
@@ -667,37 +686,43 @@ function buttonOutputConnect (event) {
     // 文字列の生成
     let text = "【つながり】";
     document.querySelectorAll(".connect_row").forEach(row => {
+        // 改行
         text += "\r";
 
+        // キャラクター名
         const name = row.querySelector(".name_follow > span").textContent;
 
+        // 前：内容
         let beforeDetail = row.querySelector(".connect.before > input.detail").value;
         if (beforeDetail == "") {
             beforeDetail = "未入力"
         }
 
+        // 前：強さ
         const beforeValue = row.querySelector(".connect.before > .connect_before").value;
 
+        // 後：内容
         let afterDetail = row.querySelector(".connect.after > input.detail").value;
         if (afterDetail == "") {
             afterDetail = "未入力"
         }
 
+        // 後：強さ
         const afterValue = row.querySelector(".connect.after > .connect_after").value;
 
+        // 夢
         const cost = row.querySelector(".cost > .value").textContent;
-        text += "●" + name + " / " + beforeDetail + ":" + beforeValue + " → " + afterDetail + ":" + afterValue + " (夢 -" + cost + ")";
+
+        // 文字列を追加
+        text +=
+            "●" + name
+            + " / " + beforeDetail + ":" + beforeValue
+            + " → " + afterDetail + ":" + afterValue
+            + " (夢 -" + cost + ")";
     });
 
     // クリップボードにコピー
     navigator.clipboard.writeText(text);
-}
-
-/**
- * 「【つながり】を確定」ボタン
- */
-function buttonConnectDecide (event) {
-    showModalDecide(event);
 }
 
 // ====================================================================================================
@@ -708,107 +733,111 @@ function buttonConnectDecide (event) {
  * モーダル非表示
  */
 function hideModal () {
+    // モーダルを取得
     const modal = document.querySelector(".modal");
 
-    modal.classList.add("hidden");
+    // モーダルを削除
+    modal.remove();
 }
 
 /**
  * モーダル表示：「削除」ボタン
  */
 function showModalDelete (id) {
-    const modal = document.querySelector(".modal");
+    // モーダルを取得
+    const templateItem = document.getElementById("temp_modal");
+    let modal = templateItem.content.cloneNode(true);
 
+    // メッセージ
     let name = document.querySelector('span[replace="name_follow_' + id + '"]').textContent;
     let text = '<span class="name_follow">' + name + '</span>を削除しますか？';
     modal.querySelector(".message").innerHTML = text;
 
-    const oldElement = modal.querySelector(".buttonYes")
-    const newElement = oldElement.cloneNode(true);
-    oldElement.parentNode.replaceChild(newElement, oldElement);
-    newElement.addEventListener(
+    // 「はい」ボタン
+    const buttonYed = modal.querySelector(".buttonYes")
+    buttonYed.addEventListener(
         "click",
         ((id) => () => {
+            // --------------------------------------------------
             // 処理
-            processDelete(id);
+            // --------------------------------------------------
+
+            // 一時保存
+            tempSaveData();
+
+            // 指定キャラクターを削除
+            listCharacter.splice(id, 1);
+
+            // 「あなた」のつながり削除
+            listCharacter[0].connect.splice(id, 1);
+
+            // 初期化
+            initialise();
+
+            // ローカルストレージに保存
+            localSave();
+
+            // --------------------------------------------------
 
             // モーダルを非表示
             hideModal();
         })(id)
     )
 
-    modal.classList.remove("hidden");
-}
-
-/**
- * キャラクター「削除」ボタン
- */
-function processDelete (id) {
-    // 一時保存
-    tempSaveData();
-
-    // 指定キャラクターを削除
-    listCharacter.splice(id, 1);
-
-    // 「あなた」のつながり削除
-    listCharacter[0].connect.splice(id, 1);
-
-    // 初期化
-    initialise();
-
-    // ローカルストレージに保存
-    localSave();
+    // モーダルを表示
+    document.body.appendChild(modal);
 }
 
 /**
  * モーダル表示：「【つながり】を確定」ボタン
  */
 function showModalDecide (event) {
-    const modal = document.querySelector(".modal");
+    // モーダルを取得
+    const templateItem = document.getElementById("temp_modal");
+    let modal = templateItem.content.cloneNode(true);
 
+    // メッセージ
     let text
         = "【つながり】の入力を確定しますか？<br>"
         + "（変更後の値で上書きされます）";
     modal.querySelector(".message").innerHTML = text;
 
-    const oldElement = modal.querySelector(".buttonYes")
-    const newElement = oldElement.cloneNode(true);
-    oldElement.parentNode.replaceChild(newElement, oldElement);
-    newElement.addEventListener(
+    // 「はい」ボタン
+    const buttonYed = modal.querySelector(".buttonYes")
+    buttonYed.addEventListener(
         "click",
         ((event) => () => {
+            // --------------------------------------------------
             // 処理
-            processConnectDecide(event);
+            // --------------------------------------------------
+
+            // 「入力を確定しました」表示
+            buttonFadeEvent(event);
+
+            document.querySelectorAll(".connect_row").forEach(row => {
+                const afterDetail = row.querySelector(".connect.after > input.detail").value;
+                row.querySelector(".connect.before > input.detail").value = afterDetail;
+
+                const afterValue = row.querySelector(".connect.after > .connect_after").value;
+                row.querySelector(".connect.before > .connect_before").value = afterValue;
+            });
+
+            // 計算
+            calcFushigi(false);
+
+            // 強いつながり
+            checkTsuyoiTsunagari();
+
+            // ローカルストレージに保存
+            localSave();
+
+            // --------------------------------------------------
 
             // モーダルを非表示
             hideModal();
         })(event)
     )
 
-    modal.classList.remove("hidden");
-}
-
-/**
- * 「【つながり】を確定」ボタン
- */
-function processConnectDecide (event) {
-    // 「入力を確定しました」表示
-    buttonFadeEvent(event);
-
-    document.querySelectorAll(".connect_row").forEach(row => {
-        const afterDetail = row.querySelector(".connect.after > input.detail").value;
-        row.querySelector(".connect.before > input.detail").value = afterDetail;
-
-        const afterValue = row.querySelector(".connect.after > .connect_after").value;
-        row.querySelector(".connect.before > .connect_before").value = afterValue;
-    });
-
-    // 計算
-    calcFushigi(false);
-
-    // 強いつながり
-    checkTsuyoiTsunagari();
-
-    // ローカルストレージに保存
-    localSave();
+    // モーダルを表示
+    document.body.appendChild(modal);
 }
