@@ -141,7 +141,7 @@ function initialise () {
     let index = 0;
     document.querySelectorAll('input.input_name').forEach(target => {
         // キャラクター名変更イベント
-        nameChange(target, index);
+        nameChange(target, index, false);
 
         // フォーカスアウト時にもイベント設定
         target.addEventListener(
@@ -525,7 +525,7 @@ function localSave () {
 /**
  * キャラクター名の変更
  */
-function nameChange (event, index) {
+function nameChange (event, index, save = true) {
     // キャラクターリストへ反映
     listCharacter[index].name = event.value;
 
@@ -535,7 +535,9 @@ function nameChange (event, index) {
     });
 
     // ローカルストレージに保存
-    localSave();
+    if (save) {
+        localSave();
+    }
 }
 
 /**
@@ -568,8 +570,8 @@ function buttonAdd () {
     // 初期化
     initialise();
 
-    // さらに一時保存
-    tempSaveData();
+    // ローカルストレージに保存
+    localSave();
 }
 
 /**
@@ -747,8 +749,8 @@ function processDelete (id) {
     // 初期化
     initialise();
 
-    // さらに一時保存
-    tempSaveData();
+    // ローカルストレージに保存
+    localSave();
 }
 
 /**
