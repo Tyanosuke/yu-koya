@@ -121,6 +121,11 @@ window.onload = function() {
                 // 初期化
                 initialise();
 
+                // 各種計算
+                calcFushigi(false);
+                calcOmoi(false);
+                checkTsuyoiTsunagari();
+
                 // モーダルを非表示
                 hideModal();
             })()
@@ -333,15 +338,21 @@ function drawConnect () {
             // 【つながり】
             // --------------------------------------------------
 
-             let to = listCharacter[0];
-             let from = listCharacter[index];
+            // あなた
+            let to = listCharacter[0];
 
+            // つながり：前
             cloneItem.querySelector(".connect.before > input.detail").value = to.connect[index].before.name;
             cloneItem.querySelector(".connect.before > input.value").value = to.connect[index].before.value;
 
+            // つながり：後
             cloneItem.querySelector(".connect.after > input.detail").value = to.connect[index].after.name;
             cloneItem.querySelector(".connect.after > input.value").value = to.connect[index].after.value;
 
+            // あいて
+            let from = listCharacter[index];
+
+            // つながり
             cloneItem.querySelector(".connect.from > input.detail").value = from.connect[0].after.name;
             cloneItem.querySelector(".connect.from > input.value").value = from.connect[0].after.value;
 
@@ -376,9 +387,11 @@ function drawConnect () {
  * つながりデータ設定
  */
 function setConnect (i) {
+    // キャラクターごとにループ
     for (let j = 0; j < listCharacter.length; j++) {
         let connect = null;
 
+        // あなた→あいて・あいて→あなたのみデータ作成
         if (
             (i == 0 && j > 0)
             || (i > 0 && j == 0)
@@ -395,6 +408,7 @@ function setConnect (i) {
             };
         }
 
+        // データを挿入
         listCharacter[i].connect.push(connect)
     }
 }
@@ -408,7 +422,6 @@ function calcFushigi (save = true) {
     document.querySelectorAll(".connect_value_to").forEach(target => {
         value += Number(target.value);
     })
-
     document.getElementById("total_fushigi").textContent = value;
 
     // 夢
@@ -462,7 +475,7 @@ function calcYume (save) {
 /**
  * 計算：想い
  */
-function calcOmoi () {
+function calcOmoi (save = true) {
     // 計算
     let value = 0;
     document.querySelectorAll(".connect_value_from").forEach(target => {
@@ -471,7 +484,9 @@ function calcOmoi () {
     document.getElementById("total_omoi").textContent = value;
 
     // ローカルストレージに保存
-    localSave();
+    if (save){
+        localSave();
+    }
 }
 
 /**
@@ -609,10 +624,6 @@ function buttonSettingPanel (event) {
  * 「クリップボードにコピーしました」表示
  */
 function buttonFadeEvent (event) {
-    if (event == null) {
-        return;
-    }
-
     // 見た目変更
     event.classList.add("active");
     setTimeout(() => {
