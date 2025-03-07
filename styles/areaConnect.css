@@ -14,11 +14,11 @@
 /* 【つながり】強さ */
 .connect input
 {
-  width: 60px;
+  width: 70px;
   height: 50px;
+  padding-left: 12px;
 
   font-size: 20px;
-  text-align: right;
 }
 
 /* 【つながり】内容 */
@@ -60,7 +60,7 @@
   color: #fff;
   background: #802020;
   border-radius: 8px;
-  margin: 0 12px;
+  margin: 0 30px;
   padding: 8px 16px;
 }
 .cost > .value
