@@ -714,17 +714,31 @@ function buttonScrollDown () {
  * 「【つながり】表を出力」ボタン
  */
 function buttonOutputConnect (event) {
-    // 「クリップボードにコピーしました」表示
-    buttonFadeEvent(event);
+    // --------------------------------------------------
+    // 最大長さ
+    // --------------------------------------------------
+
+    // キャラクター名
+    const maxLengthCharacter = getMaxLength(null, "name");
+
+    // つながり：前
+    const maxLengthConnectBefore = getMaxLength("connect", "before.name", "未入力");
+
+    // つながり：後
+    const maxLengthConnectAfter = getMaxLength("connect", "after.name");
+
+    // --------------------------------------------------
 
     // 文字列の生成
+    let totalCost = 0;
     let text = "【つながり】";
     document.querySelectorAll(".connect_row").forEach(row => {
         // 改行
         text += "\r";
 
         // キャラクター名
-        const name = row.querySelector(".name_follow > span").textContent;
+        let name = row.querySelector(".name_follow > span").textContent;
+        name = padVisualEnd(name, maxLengthCharacter, " ");
 
         // 前：内容
         let beforeDetail = row.querySelector(".connect.before > input.detail").value;
@@ -746,17 +760,38 @@ function buttonOutputConnect (event) {
 
         // 夢
         const cost = row.querySelector(".cost > .value").textContent;
+        totalCost += Number(cost);
 
+        // --------------------------------------------------
         // 文字列を追加
+        // --------------------------------------------------
+
+        // キャラクター名・【つながり】前
         text +=
             "●" + name
-            + " / " + beforeDetail + ":" + beforeValue
-            + " → " + afterDetail + ":" + afterValue
-            + " (夢 -" + cost + ")";
+            + " / " + padVisualStart(beforeDetail, maxLengthConnectBefore, " ") + ":" + beforeValue;
+
+        // 【つながり】後・夢
+        if (
+            beforeDetail != afterDetail
+            || beforeValue != afterValue
+        ) {
+            text +=
+                " → " + padVisualStart(afterDetail, maxLengthConnectAfter, " ") + ":" + afterValue
+                + " （［夢］-" + cost + "）";
+        }
     });
+
+    text += "\r";
+    text += "\r";
+    text += "合計［夢］消費量 : -" + totalCost;
 
     // クリップボードにコピー
     navigator.clipboard.writeText(text);
+
+    // 「クリップボードにコピーしました」表示
+    buttonFadeEvent(event);
+
 }
 
 // ====================================================================================================
