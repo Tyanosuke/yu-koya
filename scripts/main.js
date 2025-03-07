@@ -782,9 +782,12 @@ function buttonOutputConnect (event) {
         }
     });
 
-    text += "\r";
-    text += "\r";
-    text += "合計［夢］消費量 : -" + totalCost;
+    // 合計夢
+    if (totalCost > 0) {
+        text += "\r";
+        text += "\r";
+        text += "合計［夢］消費量 : " + totalCost;
+    }
 
     // クリップボードにコピー
     navigator.clipboard.writeText(text);
