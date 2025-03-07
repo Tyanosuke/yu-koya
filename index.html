@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="icon" href="data:,">
+    <link rel="icon" href="img/icon.png">
     <link rel="stylesheet" href="styles.css" />
 
     <script src="scripts/main.js"></script>
@@ -15,7 +15,10 @@
 
   <body>
 
-    <h1>ゆうやけこやけ 【つながり】管理ツール</h1>
+    <h1>
+      ゆうやけこやけ 【つながり】管理ツール
+    </h1>
+    <span class="only_sp hidden">※スマホでは、正常に作動しない場合があります。</span>
 
     <div>
       <!------------------------------------------------------>
@@ -162,6 +165,16 @@
       ▼
     </button>
 
+    <!------------------------------------------------------>
+    <!-- フッター -->
+    <!------------------------------------------------------>
+
+    <div class="credit">
+      作った人 : <a href="https://takusuki.com/@tyanosuke">茶の助</a>
+      /
+      アイコン: <a href="https://icooon-mono.com/">ICOOON MONO</a>
+    </div>
+
   </body>
 
   <!------------------------------------------------------>
@@ -245,14 +258,28 @@
       <td id="connect_to_">
         <div class="connect before">
           <input class="detail" placeholder="内容">
-          <input type="number" value="0" min="0" max="5" class="value connect_before" onchange="calcFushigi()">
+          <input
+            type="number"
+            value="0"
+            min="0"
+            max="5"
+            class="value connect_before"
+            onchange="calcFushigi()"
+          >
         </div>
 
         <div class="connect_arrow">▼</div>
 
         <div class="connect after">
           <input class="detail" placeholder="内容">
-          <input type="number" value="0" min="0" max="5" class="value connect_after connect_value_to" onchange="calcFushigi()">
+          <input
+            type="number"
+            value="0"
+            min="0"
+            max="5"
+            class="value connect_after connect_value_to"
+            onchange="calcFushigi()"
+          >
         </div>
       </td>
 
@@ -266,7 +293,14 @@
       <td id="connect_from_">
         <div class="connect from">
           <input class="detail" placeholder="内容">
-          <input type="number" value="0" min="0" max="5" class="value connect_value_from" onchange="calcOmoi()">
+          <input
+            type="number"
+            value="0"
+            min="0"
+            max="5"
+            class="value connect_value_from"
+            onchange="calcOmoi()"
+          >
         </div>
       </td>
 
@@ -308,8 +342,11 @@
       <td>
         <div class="flex total">
           <label>獲得【ふしぎ】</label>
+
           <span id="total_fushigi" class="value">0</span>
+
           <button class="fade-button" onclick="buttonFushigi(this)">
+            <img src="img/chat.png">
             コマンド出力
             <div class="fade-overlay">
               クリップボードに<br>
@@ -322,8 +359,11 @@
       <td>
         <div class="flex total">
           <label>消費［夢］</label>
+
           <span id="total_yume" class="value">0</span>
+
           <button class="fade-button" onclick="buttonYume(this)">
+            <img src="img/chat.png">
             コマンド出力
             <div class="fade-overlay">
               クリップボードに<br>
@@ -336,8 +376,11 @@
       <td>
         <div class="flex total">
           <label>獲得【想い】</label>
+
           <span id="total_omoi" class="value">0</span>
+
           <button class="fade-button" onclick="buttonOmoi(this)">
+            <img src="img/chat.png">
             コマンド出力
             <div class="fade-overlay">
               クリップボードに<br>
@@ -351,7 +394,8 @@
     <tr>
       <td colspan="2">
         <button class="button_footer fade-button" onclick="buttonOutputConnect(this)">
-            【つながり】表を出力
+          <img src="img/chat.png">
+          【つながり】表を出力
           <div class="fade-overlay">
             クリップボードに出力しました
           </div>
@@ -362,7 +406,7 @@
     <tr>
       <td colspan="2">
         <button class="button_footer fade-button" onclick="showModalDecide(this)">
-            【つながり】を確定
+          【つながり】を確定
           <div class="fade-overlay">
             入力を確定しました
           </div>
@@ -379,7 +423,7 @@
     <div class="modal">
       <div class="window">
         <div class="message">
-        （メッセージ）
+          （メッセージ）
         </div>
 
         <div class="buttons">

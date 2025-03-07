@@ -63,6 +63,17 @@ let listCharacter = [
  */
 window.onload = function() {
     // --------------------------------------------------
+    // スマホ非対応
+    // --------------------------------------------------
+
+    // スマホの場合
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/.test(navigator.userAgent);
+    if (isMobile) {
+        // 非対応の旨を表示
+        document.querySelector(".only_sp").classList.remove("hidden");
+    }
+
+    // --------------------------------------------------
     // データ設定
     // --------------------------------------------------
 
@@ -335,18 +346,6 @@ function drawConnect () {
             });
 
             // --------------------------------------------------
-            // 【つながり】の内容変更イベント
-            // --------------------------------------------------
-
-            const inputDetail = cloneItem.querySelector(".connect.from > input.detail");
-            inputDetail.addEventListener(
-                "change",
-                ((id, value) => () => {
-                    changeConnectName(id, value)
-                })(index, inputDetail.value)
-            );
-
-            // --------------------------------------------------
             // 【つながり】の初期値
             // --------------------------------------------------
 
@@ -367,6 +366,85 @@ function drawConnect () {
             // つながり
             cloneItem.querySelector(".connect.from > input.detail").value = from.connect[0].after.name;
             cloneItem.querySelector(".connect.from > input.value").value = from.connect[0].after.value;
+
+            // --------------------------------------------------
+            // 【つながり】の内容変更イベント
+            // --------------------------------------------------
+
+            const inputDetail = cloneItem.querySelector(".connect.from > input.detail");
+            inputDetail.addEventListener(
+                "change",
+                ((id, value) => () => {
+                    changeConnectName(id, value)
+                })(index, inputDetail.value)
+            );
+
+            // --------------------------------------------------
+            // 【つながり】の内容変更イベント
+            // --------------------------------------------------
+
+            const inputValue = cloneItem.querySelectorAll("input.value");
+            inputValue.forEach(target => {
+                // キー押下タイミング
+                target.addEventListener(
+                    "keydown",
+                    event => {
+                        // 許可するキー
+                        if (
+                            event.key === "Backspace"
+                            || event.key === "Delete"
+                            || event.key === "ArrowUp"
+                            || event.key === "ArrowDown"
+                        ) {
+                            // 何もしない
+                            return;
+                        }
+
+                        // ●０～５以外が入力された場合
+                        const allowedKeys = ["0", "1", "2", "3", "4", "5"];
+                        if (allowedKeys.includes(event.key)) {
+                            // 入力した数値を適用
+                            input.value = event.data;
+                        }
+                        // ●それ以外の場合
+                        else {
+                            // 入力自体を無効化
+                            event.preventDefault();
+                        }
+                    }
+                );
+
+                // 入力適用タイミング
+                target.addEventListener(
+                    "input",
+                    event => {
+                        // inputを取得
+                        const input = event.target;
+                        const value = input.value;
+
+                        // 正規表現：０～５
+                        const regex = /^[0-5]$/;
+
+                        // 現在の入力値が無効な場合
+                        if (!regex.test(value)) {
+                            // 入力した数値を適用
+                            input.value = event.data;
+                        }
+                    }
+                );
+
+                // フォーカスアウトタイミング
+                target.addEventListener(
+                    "blur",
+                    event => {
+                        // 空欄の場合
+                        if (!event.target.value) {
+                            // ０を入力
+                            event.target.value = 0;
+                        }
+                    }
+                );
+            })
 
             // --------------------------------------------------
 
