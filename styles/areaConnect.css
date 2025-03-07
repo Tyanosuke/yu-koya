@@ -1,0 +1,129 @@
+/* -------------------------------------------------- */
+/* 【つながり】
+/* -------------------------------------------------- */
+
+/* つながりセル */
+.connect
+{
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  align-items: center;
+}
+
+/* 【つながり】強さ */
+.connect input
+{
+  width: 60px;
+  height: 50px;
+
+  font-size: 20px;
+  text-align: right;
+}
+
+/* 【つながり】内容 */
+.connect input.detail
+{
+  width: 120px;
+  height: 50px;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* 「あなた→あいて」：つながり */
+[id^="connect_to_"]
+{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* つながり：▼ */
+.connect_arrow
+{
+  margin: 12px 0;
+
+  font-size: 20px;
+  text-align: center;
+}
+
+/* ［夢］コスト */
+[id^="cost_"]
+{
+  border-radius: 0 8px 8px 0;
+}
+.cost
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #fff;
+  background: #802020;
+  border-radius: 8px;
+  margin: 0 12px;
+  padding: 8px 16px;
+}
+.cost > .value
+{
+  margin-left: auto;
+  font-size: 30px;
+  font-weight: bold;
+  margin-left: auto;
+}
+
+/* つよいつながり */
+.strongConnect
+{
+  text-align: center;
+}
+.strongConnect > .text_main
+{
+  background: #808020;
+  border-radius: 8px;
+  margin: 0 12px;
+  padding: 8px 16px;
+
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+.strongConnect > .text_sub
+{
+  margin-top: 12px;
+
+  color: #808020;
+  font-weight: bold;
+}
+
+/* 線無し */
+.blank
+{
+  border-color: transparent !important;
+}
+
+/* 幕間：▼ */
+.arrow
+{
+  border-color: transparent !important;
+
+  font-size: 30px;
+  text-align: center;
+}
+
+/* 合計 */
+.total
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 150px;
+
+    text-align: center;
+}
+.total > .value
+{
+  font-size: 50px;
+  font-weight: bold;
+}

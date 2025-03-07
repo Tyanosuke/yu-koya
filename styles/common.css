@@ -10,7 +10,7 @@
 /* フォント設定 */
 @font-face {
   font-family: "MyFont";
-  src: url("./font/RiiTN_R.otf");
+  src: url("../font/RiiTN_R.otf");
 }
 
 /* -------------------------------------------------- */
@@ -92,11 +92,13 @@ h2
 /* 色
 /* -------------------------------------------------- */
 
+/* あなた */
 .name_self
 {
   color: #ffc8c8 !important;
 }
 
+/* あいて */
 .name_follow
 {
   color: #c8c8ff !important;
@@ -125,6 +127,16 @@ input
 }
 
 /* -------------------------------------------------- */
+/* リンク
+/* -------------------------------------------------- */
+
+a
+{
+  color: var(--strong-color) !important;
+  text-decoration: none;
+}
+
+/* -------------------------------------------------- */
 /* ボタン
 /* -------------------------------------------------- */
 
@@ -134,7 +146,7 @@ button
   display: flex;
   background: var(--strong-color);
   border: none;
-  border-radius: 8px;
+  border-radius: 25px;
   padding: 8px 16px;
 
   color: #fff;
@@ -157,7 +169,6 @@ button:disabled
 .fade-button
 {
   width: 100%;
-  min-width: 150px;
   height: 50px;
   position: relative;
   overflow: hidden;
@@ -176,6 +187,7 @@ button:disabled
     opacity: 0;
 
     color: #fff;
+    font-size: 15px;
     background-color: var(--sub-color);
 
     transition: opacity 0.3s ease;
@@ -223,199 +235,6 @@ td > button
 }
 
 /* -------------------------------------------------- */
-/* キャラクター設定
-/* -------------------------------------------------- */
-
-/* エリア */
-.area_setting
-{
-  margin-bottom: 12px;
-}
-
-/* パネル */
-.pannel_setting
-{
-  background: var(--bg-color);
-  width: fit-content;
-  border: solid 2px var(--strong-color);
-  border-radius: 8px;
-  border-top-left-radius: 0;
-  padding: 12px;
-}
-
-/* ボタン */
-.buttonAcordion
-{
-  padding: 8px 20px;
-
-  font-size: 20px;
-}
-.buttonAcordion.active
-{
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-/* タイトル行 */
-.titleRow
-{
-  display: flex;
-  margin-bottom: 8px;
-}
-
-/* 「閉じる」ボタン */
-.titleRow > button
-{
-  margin-left: auto;
-}
-
-/* 見出しセル */
-.titleCell
-{
-  color: var(--bg-color);
-  background: var(--font-color);
-}
-
-/* コスト */
-[class^="input_cost_"]
-{
-  width: 70px;
-
-  font-size: 20px;
-  text-align: right;
-}
-
-/* -------------------------------------------------- */
-/* 【つながり】
-/* -------------------------------------------------- */
-
-/* つながりセル */
-.connect
-{
-  display: flex;
-  justify-content: space-between;
-  gap: 4px;
-  align-items: center;
-}
-
-/* 【つながり】強さ */
-.connect input
-{
-  width: 80px;
-  height: 50px;
-
-  font-size: 20px;
-  text-align: center;
-}
-
-/* 【つながり】内容 */
-.connect input.detail
-{
-  width: 100px;
-  height: 50px;
-  font-size: 20px;
-  text-align: center;
-}
-
-/* 「あなた→あいて」：つながり */
-[id^="connect_to_"]
-{
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-/* つながり：▼ */
-.connect_arrow
-{
-  margin: 12px 0;
-
-  font-size: 20px;
-  text-align: center;
-}
-
-/* ［夢］コスト */
-[id^="cost_"]
-{
-  border-radius: 0 8px 8px 0;
-}
-.cost
-{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  color: #fff;
-  background: #802020;
-  border-radius: 8px;
-  margin: 0 12px;
-  padding: 8px 16px;
-}
-.cost > .value
-{
-  margin-left: auto;
-  font-size: 30px;
-  font-weight: bold;
-  margin-left: auto;
-}
-
-/* つよいつながり */
-.strongConnect
-{
-  text-align: center;
-}
-.strongConnect > .text_main
-{
-  background: #808020;
-  border-radius: 8px;
-  margin: 0 12px;
-  padding: 8px 16px;
-
-  color: #fff;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-}
-.strongConnect > .text_sub
-{
-  margin-top: 12px;
-
-  color: #808020;
-  font-weight: bold;
-}
-
-/* 線無し */
-.blank
-{
-  border-color: transparent !important;
-}
-
-/* 幕間：▼ */
-.arrow
-{
-  border-color: transparent !important;
-
-  font-size: 30px;
-  text-align: center;
-}
-
-/* 合計 */
-.total
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    min-height: 150px;
-
-    text-align: center;
-}
-.total > .value
-{
-  font-size: 50px;
-  font-weight: bold;
-}
-
-/* -------------------------------------------------- */
 /* スクロールボタン
 /* -------------------------------------------------- */
 
@@ -425,7 +244,7 @@ body
   padding-bottom: 62px;
 }
 
-/* エリア */
+/* ボタン */
 .buttonScroll
 {
   display: flex;
@@ -436,7 +255,7 @@ body
   opacity: 0.5;
 
   color: var(--strong-color);
-  background: none;
+  background: none !important;
   border: solid 3px var(--strong-color);
   border-radius: 50px;
 
@@ -448,14 +267,25 @@ body
 
   transition: opacity 0.3s;
 }
+
+/* ボタン：ホバー */
 .buttonScroll:hover
 {
   opacity: 1;
 }
-.buttonScroll.transparent
+
+/* ボタン：非活性 */
+.buttonScroll:disabled
 {
   opacity: 0 !important;
   z-index: -1;
+}
+
+/* フォーカス */
+.buttonScroll:focus
+{
+  opacity: 1;
+  outline: none;
 }
 
 /* -------------------------------------------------- */
@@ -528,7 +358,7 @@ body
 {
   display: flex;
   gap: 20px;
-  margin-top: 12px;
+  margin-top: 20px;
 }
 
 /* -------------------------------------------------- */

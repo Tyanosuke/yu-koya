@@ -1,0 +1,62 @@
+/* -------------------------------------------------- */
+/* 設定
+/* -------------------------------------------------- */
+
+/* エリア */
+.area_setting
+{
+  margin-bottom: 12px;
+}
+
+/* パネル */
+.pannel_setting
+{
+  background: var(--bg-color);
+  width: fit-content;
+  border: solid 4px var(--strong-color);
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  padding: 12px;
+}
+
+/* ボタン */
+.buttonAcordion
+{
+  padding: 8px 20px;
+
+  font-size: 20px;
+}
+.buttonAcordion.active
+{
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* タイトル行 */
+.titleRow
+{
+  display: flex;
+  margin-bottom: 8px;
+}
+
+/* 「閉じる」ボタン */
+.titleRow > button
+{
+  margin-left: auto;
+}
+
+/* 見出しセル */
+.titleCell
+{
+  color: var(--bg-color);
+  background: var(--font-color);
+}
+
+/* コスト */
+[class^="input_cost_"]
+{
+  width: 70px;
+
+  font-size: 20px;
+  text-align: right;
+}

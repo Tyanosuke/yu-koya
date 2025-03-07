@@ -196,15 +196,29 @@ function initialise () {
 
             // ●スクロール最上段
             if (window.scrollY === 0) {
-                // ボタンを消す
-                buttonScrollUp.classList.add("transparent");
-                buttonScrollDown.classList.remove("transparent");
+                // ▼ボタンを出す
+                buttonScrollDown.disabled = false;
+
+                // フォーカス
+                if (document.activeElement === buttonScrollUp) {
+                    buttonScrollDown.focus();
+                }
+
+                // ▲ボタンを消す
+                buttonScrollUp.disabled = true;
             }
             // ●それ以外
             else {
-                // ボタンを出す
-                buttonScrollUp.classList.remove("transparent");
-                buttonScrollDown.classList.add("transparent");
+                // ▲ボタンを出す
+                buttonScrollUp.disabled = false;
+
+                // フォーカス
+                if (document.activeElement === buttonScrollDown) {
+                    buttonScrollUp.focus();
+                }
+
+                // ▼ボタンを消す
+                buttonScrollDown.disabled = true;
             }
         }
     );
@@ -395,6 +409,7 @@ function drawConnect () {
                             || event.key === "Delete"
                             || event.key === "ArrowUp"
                             || event.key === "ArrowDown"
+                            || event.key === "Tab"
                         ) {
                             // 何もしない
                             return;
@@ -816,7 +831,6 @@ function buttonOutputConnect (event) {
 
         // キャラクター名
         let name = row.querySelector(".name_follow > span").textContent;
-        name = padVisualEnd(name, maxLengthCharacter, " ");
 
         // 前：内容
         let beforeDetail = row.querySelector(".connect.before > input.detail").value;
@@ -845,18 +859,16 @@ function buttonOutputConnect (event) {
         // --------------------------------------------------
 
         // キャラクター名・【つながり】前
-        text +=
-            "●" + name
-            + " / " + padVisualStart(beforeDetail, maxLengthConnectBefore, " ") + ":" + beforeValue;
+        text += "●" + padVisualEnd(name, maxLengthCharacter);
+        text += " / " + padVisualStart(beforeDetail, maxLengthConnectBefore) + ":" + beforeValue;
 
         // 【つながり】後・夢
         if (
             beforeDetail != afterDetail
             || beforeValue != afterValue
         ) {
-            text +=
-                " → " + padVisualStart(afterDetail, maxLengthConnectAfter, " ") + ":" + afterValue
-                + " （［夢］-" + cost + "）";
+            text += " → " + padVisualStart(afterDetail, maxLengthConnectAfter) + ":" + afterValue;
+            text += " （［夢］-" + cost + "）";
         }
     });
 
@@ -948,8 +960,8 @@ function showModalDecide (event) {
 
     // メッセージ
     let text
-        = "【つながり】の入力を確定しますか？<br>"
-        + "（変更後の値で上書きされます）";
+        = "【つながり】を確定しますか？<br>"
+        + "（変更後の内容・強さで上書きされます）";
     modal.querySelector(".message").innerHTML = text;
 
     // 「はい」ボタン

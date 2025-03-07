@@ -5,7 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<link rel="icon" href="img/icon.png">
-		<link rel="stylesheet" href="styles.css" />
+		<link rel="stylesheet" href="styles/common.css" />
+		<link rel="stylesheet" href="styles/areaSetting.css" />
+		<link rel="stylesheet" href="styles/areaConnect.css" />
 
 		<script src="scripts/main.js"></script>
 		<script src="scripts/utilString.js"></script>
@@ -14,10 +16,10 @@
 	</head>
 
 	<body>
-
 		<h1>
 			ゆうやけこやけ 【つながり】管理ツール
 		</h1>
+
 		<span class="only_sp hidden">※スマホでは、正常に作動しない場合があります。</span>
 
 		<div>
@@ -27,9 +29,9 @@
 
 			<div class="area_setting">
 				<div class="flex">
-						<button class="buttonAcordion" onclick="buttonSettingPanel(this)">
-							設定
-						</button>
+					<button class="buttonAcordion" onclick="buttonSettingPanel(this)">
+						設定
+					</button>
 				</div>
 
 				<div class="pannel_setting hidden">
@@ -157,7 +159,7 @@
 		<!-- スクロールボタン -->
 		<!------------------------------------------------------>
 
-		<button class="buttonScroll up transparent" onclick="buttonScrollUp()">
+		<button class="buttonScroll up" disabled onclick="buttonScrollUp()">
 			▲
 		</button>
 
@@ -173,7 +175,6 @@
 			<span>作った人：<a href="https://takusuki.com/@tyanosuke" target="_blank">茶の助</a></span>
 			<span>アイコン：<a href="https://icooon-mono.com/" target="_blank">ICOOON MONO</a></span>
 		</div>
-
 	</body>
 
 	<!------------------------------------------------------>
@@ -189,6 +190,21 @@
 
 			<td>
 				<input replace="name_self" class="input_name" value="" onchange="nameChange(this)">
+			</td>
+
+			<td class="noRadius_right">
+			</td>
+
+			<td class="noRadius">
+			</td>
+
+			<td class="noRadius">
+			</td>
+
+			<td class="noRadius">
+			</td>
+
+			<td class="noRadius_left">
 			</td>
 		</tr>
 	</template>
