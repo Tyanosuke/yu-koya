@@ -146,7 +146,7 @@ button
   display: flex;
   background: var(--strong-color);
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 8px 16px;
 
   color: #fff;
