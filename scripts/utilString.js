@@ -42,7 +42,16 @@ function getMaxLength (keyList, targetKey, blankValue = null) {
 
     // 対象文字列の、見た目の幅を取得
     const nameWidths = targetList.map(item => {
+        // データが無い場合、スキップ
         if (!item) {
+            return 0;
+        }
+
+        // 「あなた」は表に出ないので、スキップ
+        if (
+            keyList == null
+            && JSON.stringify(item) == JSON.stringify(listCharacter[0])
+        ) {
             return 0;
         }
 
@@ -88,7 +97,7 @@ function getMaxLength (keyList, targetKey, blankValue = null) {
 /**
  * padEnd改良版
  */
-function padVisualEnd(target, targetVisualWidth, fillString = " ") {
+function padVisualEnd(target, targetVisualWidth, fillString = "\u2007") {
     const currentWidth = getVisualWidth(target);
     const paddingWidth = targetVisualWidth - currentWidth;
 
@@ -102,7 +111,7 @@ function padVisualEnd(target, targetVisualWidth, fillString = " ") {
 /**
  * padStart改良版
  */
-function padVisualStart(target, targetVisualWidth, fillString = " ") {
+function padVisualStart(target, targetVisualWidth, fillString = "\u2007") {
     const currentWidth = getVisualWidth(target);
     const paddingWidth = targetVisualWidth - currentWidth;
 

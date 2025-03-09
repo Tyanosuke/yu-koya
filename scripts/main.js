@@ -812,13 +812,25 @@ function buttonOutputConnect (event) {
     // --------------------------------------------------
 
     // キャラクター名
-    const maxLengthCharacter = getMaxLength(null, "name");
+    let maxLengthCharacter = 0
 
     // つながり：前
-    const maxLengthConnectBefore = getMaxLength("connect", "before.name", "未入力");
+    let maxLengthConnectBefore = 0;
 
     // つながり：後
-    const maxLengthConnectAfter = getMaxLength("connect", "after.name");
+    let maxLengthConnectAfter = 0;
+
+    // 「スペース調整」ON
+    if (document.getElementById("spaceAdjust").checked) {
+        // キャラクター名
+        maxLengthCharacter = getMaxLength(null, "name");
+
+        // つながり：前
+        maxLengthConnectBefore = getMaxLength("connect", "before.name", "未入力");
+
+        // つながり：後
+        maxLengthConnectAfter = getMaxLength("connect", "after.name");
+    }
 
     // --------------------------------------------------
 

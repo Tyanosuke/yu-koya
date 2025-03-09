@@ -71,7 +71,7 @@
   margin-left: auto;
 }
 
-/* つよいつながり */
+/* 強い【つながり】 */
 .strongConnect
 {
   text-align: center;
@@ -94,6 +94,15 @@
 
   color: #808020;
   font-weight: bold;
+}
+
+/* 【つながり】表の出力 */
+.checkboxOption
+{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 12px;
 }
 
 /* 線無し */
