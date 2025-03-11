@@ -140,7 +140,7 @@ window.onload = function() {
                 // 以前のデータを取得
                 listCharacter = localData;
 
-                // 前バージョン対応
+                // 前バージョン互換
                 if (listCharacter[0].control == undefined) {
                     for (let i = 0; i < listCharacter.length; i++) {
                         listCharacter[i].control = (i == 0);
@@ -501,9 +501,9 @@ function drawConnect () {
             // あなたからの【つながり】
             let to = listCharacter[selectCharacterId];
             const toConnect = to.connect[index];
-            // - 前ver対応
+            // - 前バージョン互換
             if (!toConnect) {
-                toConnect = {
+                to.connect[index] = {
                     before: {
                         name: "",
                         value: "0",
@@ -524,9 +524,9 @@ function drawConnect () {
             // あいてからの【つながり】
             let from = listCharacter[index];
             const fromConnect = from.connect[selectCharacterId];
-            // - 前ver対応
+            // - 前バージョン互換
             if (!fromConnect) {
-                fromConnect = {
+                from.connect[selectCharacterId] = {
                     before: {
                         name: "",
                         value: "0",
