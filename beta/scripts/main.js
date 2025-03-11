@@ -726,7 +726,7 @@ function drawConnect () {
                     target.addEventListener(
                         eventType,
                         ((from, index) => () => {
-                            const targetRow = document.querySelector('[characterid="' + index + '"]');
+                            const targetRow = document.querySelector('tr[characterid="' + index + '"]');
                             const before = targetRow.querySelector(".connect.before > input.value").value;
                             const after = targetRow.querySelector(".connect.after > input.value").value;
                             const target = targetRow.querySelector(".connectNote.next > span");
