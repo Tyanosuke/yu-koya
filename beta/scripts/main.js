@@ -23,14 +23,14 @@ let listCostDefault = [
  */
 let listCharacter = [
     {
-        name: "あなた",
-        control: true,
+        name: "町",
+        control: false,
         cost: null,
         connect: [],
     },
     {
-        name: "町",
-        control: false,
+        name: "あなた",
+        control: true,
         cost: null,
         connect: [],
     },
@@ -94,7 +94,7 @@ window.onload = function() {
         target.cost = [...listCostDefault];
 
         // つながり
-        setConnect(i);
+        setConnect(i, true);
 
         i++;
     })
@@ -769,26 +769,45 @@ function drawConnect () {
 /**
  * つながりデータ設定
  */
-function setConnect (i) {
+function setConnect (i, init = false) {
     // キャラクターごとにループ
     for (let j = 0; j < listCharacter.length; j++) {
         let connect = null;
 
-        // データ作成
+        // --------------------------------------------------
+        // 初期値
+        // --------------------------------------------------
+
+        let defaultData;
+
+        // ●町
+        if ((init && i == 0) ) {
+            defaultData = {
+                name: "受容",
+                value: "2",
+            }
+        }
+        // ●それ以外
+        else {
+            defaultData = {
+                name: "",
+                value: "0",
+            }
+        }
+
+        // --------------------------------------------------
+        // データ
+        // --------------------------------------------------
+
+        // 生成
         if (i != j) {
             connect = {
-                before: {
-                    name: "",
-                    value: "0",
-                },
-                after: {
-                    name: "",
-                    value: "0",
-                }
+                before: defaultData,
+                after: defaultData,
             };
         }
 
-        // データを挿入
+        // 挿入
         listCharacter[i].connect.push(connect)
     }
 }
