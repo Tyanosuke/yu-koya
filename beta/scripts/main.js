@@ -143,11 +143,6 @@ window.onload = function() {
                 // 初期化
                 initialise();
 
-                // 各種計算
-                calcFushigi();
-                calcOmoi();
-                checkTsuyoiTsunagari();
-
                 // モーダルを非表示
                 hideModal();
             })()
