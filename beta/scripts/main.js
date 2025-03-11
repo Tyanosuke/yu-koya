@@ -111,14 +111,18 @@ window.onload = function() {
 
     // ローカルストレージからデータを取得
     let errorFlag = false;
+    let oldFlag = false;
     let localData;
     try {
         localData = JSON.parse(localStorage.getItem("CharacterData"));
 
-        // 旧バージョンデータ
+        // 前バージョンデータ
         if (!localData) {
             localData = JSON.parse(localStorage.getItem("data"));
             if (localData) {
+                // フラグ
+                oldFlag = true;
+
                 // 前バージョン互換
                 compatible(localData);
             }
@@ -139,6 +143,10 @@ window.onload = function() {
 
         // メッセージ
         let text = '以前の入力内容を復元しますか？';
+        if (oldFlag) {
+            text += '<br>';
+            text += '<span class="name_self">（旧バージョンでの入力のため、不具合が出る可能性があります）</span>';
+        }
         modal.querySelector(".message").innerHTML = text;
 
         // 「はい」ボタン
@@ -201,26 +209,26 @@ function compatible (data) {
                     }
                 };
             }
-            // ●【つながり】対象が足りない場合、補填
-            else if (connect === undefined) {
-                data[i].connect.push({
-                    before: {
-                        name: "",
-                        value: "0",
-                    },
-                    after: {
-                        name: "",
-                        value: "0",
-                    }
-                });
-            }
+            // // ●【つながり】対象が足りない場合、補填
+            // else if (connect === undefined) {
+            //     data[i].connect.push({
+            //         before: {
+            //             name: "",
+            //             value: "0",
+            //         },
+            //         after: {
+            //             name: "",
+            //             value: "0",
+            //         }
+            //     });
+            // }
         }
 
-        // キャラクター数とデータ数を合わせる（削除）
-        const lengthDifferent = (data[i].connect.length - data.length);
-        if (lengthDifferent > 0) {
-            data[i].connect.splice(-lengthDifferent, lengthDifferent);
-        }
+        // // キャラクター数とデータ数を合わせる（削除）
+        // const lengthDifferent = (data[i].connect.length - data.length);
+        // if (lengthDifferent > 0) {
+        //     data[i].connect.splice(-lengthDifferent, lengthDifferent);
+        // }
 
         // --------------------------------------------------
     }
