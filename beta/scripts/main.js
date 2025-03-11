@@ -140,12 +140,38 @@ window.onload = function() {
                 // 以前のデータを取得
                 listCharacter = localData;
 
+                // --------------------------------------------------
                 // 前バージョン互換
+                // --------------------------------------------------
+
+                // 「出力チェック」control
                 if (listCharacter[0].control == undefined) {
                     for (let i = 0; i < listCharacter.length; i++) {
                         listCharacter[i].control = (i == 0);
                     }
                 }
+
+                // 「つながり」connect
+                for (let i = 0; i < listCharacter.length; i++) {
+                    // 足りない分を補填
+                    const lengthDifference = Math.abs(listCharacter[i].connect.length - listCharacter[i].length);
+                    if (lengthDifference > 0) {
+                        for (let j = 0; j < lengthDifference; j++) {
+                            listCharacter[i].connect.push({
+                                before: {
+                                    name: "",
+                                    value: "0",
+                                },
+                                after: {
+                                    name: "",
+                                    value: "0",
+                                }
+                            });
+                        }
+                    }
+                }
+
+                // --------------------------------------------------
 
                 // 初期化
                 initialise();
@@ -501,19 +527,6 @@ function drawConnect () {
             // あなたからの【つながり】
             let to = listCharacter[selectCharacterId];
             let toConnect = to.connect[index];
-            // - 前バージョン互換
-            if (!toConnect) {
-                toConnect = {
-                    before: {
-                        name: "",
-                        value: "0",
-                    },
-                    after: {
-                        name: "",
-                        value: "0",
-                    }
-                };
-            }
             // - 設定：前
             cloneItem.querySelector(".connect.before > input.detail").value = toConnect.before.name;
             cloneItem.querySelector(".connect.before > input.value").value = toConnect.before.value;
@@ -524,19 +537,6 @@ function drawConnect () {
             // あいてからの【つながり】
             let from = listCharacter[index];
             let fromConnect = from.connect[selectCharacterId];
-            // - 前バージョン互換
-            if (!fromConnect) {
-                fromConnect = {
-                    before: {
-                        name: "",
-                        value: "0",
-                    },
-                    after: {
-                        name: "",
-                        value: "0",
-                    }
-                };
-            }
             // - 設定
             cloneItem.querySelector(".connect.from > input.detail").value = fromConnect.after.name;
             cloneItem.querySelector(".connect.from > input.value").value = fromConnect.after.value;
