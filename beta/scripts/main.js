@@ -29,31 +29,25 @@ let listCharacter = [
         connect: [],
     },
     {
-        name: "あなた",
+        name: "PC1",
         control: true,
         cost: null,
         connect: [],
     },
     {
-        name: "なかま1",
+        name: "PC2",
         control: false,
         cost: null,
         connect: [],
     },
     {
-        name: "なかま2",
+        name: "PC3",
         control: false,
         cost: null,
         connect: [],
     },
     {
-        name: "なかま3",
-        control: false,
-        cost: null,
-        connect: [],
-    },
-    {
-        name: "なかま4",
+        name: "PC4",
         control: false,
         cost: null,
         connect: [],
@@ -142,11 +136,14 @@ window.onload = function() {
         let modal = templateItem.content.cloneNode(true);
 
         // メッセージ
-        let text = '以前の入力内容を復元しますか？';
+        let text = "";
         if (oldFlag) {
+            text += '<span class="name_self">旧バージョンの入力データを復元しようとしています。<br>';
+            text += 'これは、今後使用できなくなる可能性があります。<br>';
+            text += '復元後、「【つながり】を確定」ボタンで保存し直してください。</span><br>';
             text += '<br>';
-            text += '<span class="name_self">（旧バージョンでの入力のため、不具合が出る可能性があります）</span>';
         }
+        text += '以前の入力内容を復元しますか？';
         modal.querySelector(".message").innerHTML = text;
 
         // 「はい」ボタン
