@@ -638,6 +638,9 @@ function drawConnect () {
                             // 入力した数値を適用
                             input.value = event.data;
                         }
+
+                        // 一時保存
+                        tempSaveData();
                     }
                 );
 
