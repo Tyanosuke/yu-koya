@@ -211,7 +211,7 @@ function compatible () {
         }
 
         // キャラクター数とデータ数を合わせる（削除）
-        const lengthDifferent = (listCharacter[i].connect - listCharacter.length);
+        const lengthDifferent = (listCharacter[i].connect.length - listCharacter.length);
         if (lengthDifferent > 0) {
             listCharacter[i].connect.splice(-lengthDifferent, lengthDifferent);
         }
