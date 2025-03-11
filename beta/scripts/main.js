@@ -500,10 +500,10 @@ function drawConnect () {
 
             // あなたからの【つながり】
             let to = listCharacter[selectCharacterId];
-            const toConnect = to.connect[index];
+            let toConnect = to.connect[index];
             // - 前バージョン互換
             if (!toConnect) {
-                to.connect[index] = {
+                toConnect = {
                     before: {
                         name: "",
                         value: "0",
@@ -523,10 +523,10 @@ function drawConnect () {
 
             // あいてからの【つながり】
             let from = listCharacter[index];
-            const fromConnect = from.connect[selectCharacterId];
+            let fromConnect = from.connect[selectCharacterId];
             // - 前バージョン互換
             if (!fromConnect) {
-                from.connect[selectCharacterId] = {
+                fromConnect = {
                     before: {
                         name: "",
                         value: "0",
