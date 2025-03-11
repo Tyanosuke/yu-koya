@@ -23,36 +23,41 @@ let listCostDefault = [
  */
 let listCharacter = [
     {
-        name: "あなた",
-        cost: null,
-        connect: [],
-    },
-    {
         name: "町",
+        control: false,
         cost: null,
         connect: [],
     },
     {
-        name: "なかま1",
+        name: "PC1",
+        control: true,
         cost: null,
         connect: [],
     },
     {
-        name: "なかま2",
+        name: "PC2",
+        control: false,
         cost: null,
         connect: [],
     },
     {
-        name: "なかま3",
+        name: "PC3",
+        control: false,
         cost: null,
         connect: [],
     },
     {
-        name: "なかま4",
+        name: "PC4",
+        control: false,
         cost: null,
         connect: [],
     },
 ]
+
+/**
+ * 表示キャラクター番号（0から）
+ */
+let selectCharacterId = null;
 
 // ====================================================================================================
 // 初期化
@@ -83,7 +88,7 @@ window.onload = function() {
         target.cost = [...listCostDefault];
 
         // つながり
-        setConnect(i);
+        setConnect(i, true);
 
         i++;
     })
@@ -92,7 +97,7 @@ window.onload = function() {
     // 初期化
     // --------------------------------------------------
 
-    initialise();
+    initialise(true);
 
     // --------------------------------------------------
     // 復元
@@ -100,9 +105,29 @@ window.onload = function() {
 
     // ローカルストレージからデータを取得
     let errorFlag = false;
+    let oldFlag = false;
     let localData;
     try {
-        localData = JSON.parse(localStorage.getItem("data"));
+        // データ読み込み
+        localData = JSON.parse(localStorage.getItem("CharacterData"));
+
+        // ●データが無い場合
+        if (!localData) {
+            // 旧データを読み込み
+            localData = JSON.parse(localStorage.getItem("data"));
+            if (localData) {
+                // フラグ
+                oldFlag = true;
+
+                // 前バージョン互換
+                compatible(localData);
+            }
+        }
+        // ●そうでない場合
+        else {
+            // 旧データを削除
+            localStorage.removeItem("data");
+        }
     } catch {
         errorFlag = true;
     }
@@ -118,7 +143,14 @@ window.onload = function() {
         let modal = templateItem.content.cloneNode(true);
 
         // メッセージ
-        let text = '以前の入力内容を復元しますか？';
+        let text = "";
+        if (oldFlag) {
+            text += '<span class="name_self">旧バージョンの入力データを復元しようとしています。<br>';
+            text += 'これは、今後使用できなくなる可能性があります。<br>';
+            text += '復元後、「【つながり】を確定」ボタンで保存し直してください。</span><br>';
+            text += '<br>';
+        }
+        text += '以前の入力内容を復元しますか？';
         modal.querySelector(".message").innerHTML = text;
 
         // 「はい」ボタン
@@ -130,12 +162,7 @@ window.onload = function() {
                 listCharacter = localData;
 
                 // 初期化
-                initialise();
-
-                // 各種計算
-                calcFushigi(false);
-                calcOmoi(false);
-                checkTsuyoiTsunagari();
+                initialise(true);
 
                 // モーダルを非表示
                 hideModal();
@@ -147,20 +174,71 @@ window.onload = function() {
     }
 }
 
+/**
+ * 前バージョン互換
+ */
+function compatible (data) {
+    for (let i = 0; i < data.length; i++) {
+        // --------------------------------------------------
+        // 「出力チェック」control
+        // --------------------------------------------------
+
+        // データが無い場合
+        if (data[i].control == undefined) {
+            // 最初のキャラクターのみＯＮ
+            data[i].control = (i == 0);
+        }
+
+        // --------------------------------------------------
+        // 「つながり」connect
+        // --------------------------------------------------
+
+        // キャラクター数とデータ数を合わせる（追加）
+        for (let j = 0; j < data.length; j++) {
+            let connect = data[i].connect[j];
+
+            // ●対応していなかった、なかまからの【つながり】を補填
+            if (
+                connect === null
+                && i != j
+            ) {
+                data[i].connect[j] = {
+                    before: {
+                        name: "",
+                        value: "0",
+                    },
+                    after: {
+                        name: "",
+                        value: "0",
+                    }
+                };
+            }
+        }
+
+        // --------------------------------------------------
+    }
+}
 
 /**
  * 初期化
  */
-function initialise () {
+function initialise (init = false) {
     // --------------------------------------------------
     // テーブル描画
     // --------------------------------------------------
 
     // 設定
-    drawSetting();
+    drawSetting(init);
 
     // つながり
     drawConnect();
+
+    // 計算
+    if (selectCharacterId) {
+        calcFushigi();
+        calcOmoi();
+        checkTsuyoiTsunagari();
+    }
 
     // --------------------------------------------------
     // キャラクター名入力欄：フォーカスアウト
@@ -169,7 +247,7 @@ function initialise () {
     let index = 0;
     document.querySelectorAll('input.input_name').forEach(target => {
         // キャラクター名変更イベント
-        nameChange(target, index, false);
+        nameChange(target, index);
 
         // フォーカスアウト時にもイベント設定
         target.addEventListener(
@@ -184,7 +262,7 @@ function initialise () {
     });
 
     // --------------------------------------------------
-    // スクロールボタン
+    // スクロールボタン表示切替
     // --------------------------------------------------
 
     document.addEventListener(
@@ -195,12 +273,12 @@ function initialise () {
             const buttonScrollDown = document.querySelector(".buttonScroll.down");
 
             // ●スクロール最上段
-            if (window.scrollY === 0) {
+            if (window.scrollY == 0) {
                 // ▼ボタンを出す
                 buttonScrollDown.disabled = false;
 
                 // フォーカス
-                if (document.activeElement === buttonScrollUp) {
+                if (document.activeElement == buttonScrollUp) {
                     buttonScrollDown.focus();
                 }
 
@@ -213,7 +291,7 @@ function initialise () {
                 buttonScrollUp.disabled = false;
 
                 // フォーカス
-                if (document.activeElement === buttonScrollDown) {
+                if (document.activeElement == buttonScrollDown) {
                     buttonScrollUp.focus();
                 }
 
@@ -222,12 +300,18 @@ function initialise () {
             }
         }
     );
+
+    // --------------------------------------------------
+    // 【つながり】表の表示
+    // --------------------------------------------------
+
+    document.getElementById("mainContents").classList.remove("hidden");
 }
 
 /**
  * テーブル描画：設定
  */
-function drawSetting() {
+function drawSetting(init) {
     // --------------------------------------------------
     // 通常行
     // --------------------------------------------------
@@ -243,66 +327,138 @@ function drawSetting() {
     addPoint.querySelectorAll("tr:not(.fixedRow)").forEach(target => {
         target.remove();
     })
+    document.querySelector(".tab_connect").innerHTML = "";
 
     // キャラクターごとにループ
     let index = 0;
     let cloneItem;
     listCharacter.forEach(character => {
-        // ●あなた
-        if (index == 0) {
-            // テンプレートを複製
-            cloneItem = templateItemSelf.content.cloneNode(true);
-        }
-        // ●あいて
-        else {
-            // テンプレートを複製
-            cloneItem = templateItemFollow.content.cloneNode(true);
+        // --------------------------------------------------
+        // テンプレートを複製
+        // --------------------------------------------------
 
-            // コスト
-            let costIndex = 0;
-            cloneItem.querySelectorAll('[class^="input_cost_"]').forEach(cost => {
-                // 初期値の設定
-                cost.value = character.cost[costIndex];
+        cloneItem = templateItemFollow.content.cloneNode(true);
 
-                // 変更イベント
-                cost.addEventListener(
-                    "change",
-                    ((character, costIndex) => (event) => {
-                        // キャラクターリストのコストを更新
-                        character.cost[costIndex] = Number(event.target.value);
+        // --------------------------------------------------
+        // ID
+        // --------------------------------------------------
 
-                        // 再計算
-                        calcFushigi();
-                    })(character, costIndex)
-                );
+        cloneItem.firstElementChild.setAttribute("settingId", index);
 
-                costIndex++
-            });
+        // --------------------------------------------------
+        // 「コスト」
+        // --------------------------------------------------
 
-            // 削除ボタン
-            cloneItem.querySelector("button.removeCharacter").addEventListener(
-                "click",
-                 ((i) => () => {
-                    showModalDelete(i);
-                })(index)
+        let costIndex = 0;
+        cloneItem.querySelectorAll('[class^="input_cost_"]').forEach(cost => {
+            // 初期値の設定
+            cost.value = character.cost[costIndex];
+
+            // 変更イベント
+            cost.addEventListener(
+                "change",
+                ((character, costIndex) => (event) => {
+                    // キャラクターリストのコストを更新
+                    character.cost[costIndex] = Number(event.target.value);
+
+                    // 再計算
+                    calcFushigi();
+                })(character, costIndex)
             );
 
-            // ID設定
-            cloneItem.id += index;
-            cloneItem.querySelector(".set_id").textContent = index;
+            costIndex++
+        });
 
-            // 置き換え要素
-            const keyName = "replace";
-            cloneItem.querySelectorAll('[' + keyName + ']').forEach(item => {
-                item.setAttribute(keyName, item.getAttribute(keyName) + index);
-            });
+        // --------------------------------------------------
+        // 「番号」
+        // --------------------------------------------------
+
+        cloneItem.id += index;
+        const elemId = cloneItem.querySelector(".set_id");
+        elemId.textContent = index + 1;
+
+        // --------------------------------------------------
+        // 「出力」チェック
+        // --------------------------------------------------
+
+        // 要素を取得
+        const elemCheckControl = cloneItem.querySelector('.checkControl > input[type="checkbox"]');
+
+        // データを読み取り
+        const valueCheckControl = listCharacter[index].control;
+
+        // チェック状態を設定
+        elemCheckControl.checked = valueCheckControl;
+
+        // 番号の文字色を設定
+        elemId.classList.add("name_" + ((valueCheckControl) ? "self" : "follow"));
+
+        // チェック切り替えイベント
+        elemCheckControl.addEventListener(
+            "change",
+            ((index) => (event) => {
+                toggleCheckControl(index, event.target.checked);
+            })(index)
+        );
+
+        // タブボタンを追加
+        if (valueCheckControl) {
+            // 要素を生成
+            let elemTabButton = document.createElement("button");
+
+            // 表示名
+            elemTabButton.textContent = listCharacter[index].name;
+
+            // キャラクター番号
+            elemTabButton.setAttribute("characterId", index);
+
+            // 押下イベント
+            elemTabButton.addEventListener(
+                "click",
+                ((index) => () => {
+                    // キャラクター選択
+                    selectCharacterId = index;
+
+                    // 初期化
+                    initialise();
+                })(index)
+            )
+
+            // 追加
+            document.querySelector(".tab_connect").appendChild(elemTabButton);
         }
 
-        // キャラクター名
+        // --------------------------------------------------
+        // 「名前」
+        // --------------------------------------------------
+
+        // 設定
         cloneItem.querySelector("input.input_name").value = character.name;
 
+        // 置き換え要素
+        const keyName = "replace";
+        cloneItem.querySelectorAll('[' + keyName + ']').forEach(item => {
+            item.setAttribute(keyName, item.getAttribute(keyName) + index);
+        });
+
+        // --------------------------------------------------
+        // 「削除」ボタン
+        // --------------------------------------------------
+
+        cloneItem.querySelector("button.removeCharacter").addEventListener(
+            "click",
+                ((i) => () => {
+                showModalDelete(i);
+            })(index)
+        );
+
+        // --------------------------------------------------
         // 要素を追加する
+        // --------------------------------------------------
+
         addPoint.appendChild(cloneItem);
+
+        // --------------------------------------------------
 
         index++;
     });
@@ -319,12 +475,57 @@ function drawSetting() {
 
     // 追加ポイント
     addPoint.appendChild(cloneItemLast);
+
+    // --------------------------------------------------
+    // タブボタン
+    // --------------------------------------------------
+
+    // 【つながり】エリア
+    const containerConnect = document.getElementById("container_connect");
+
+    // ●タブボタンがある（＝操作キャラクターがいる）
+    const activeTab = document.querySelectorAll(".tab_connect > button");
+    if (activeTab.length > 0) {
+        // エリアを表示
+        containerConnect.classList.remove("hidden");
+
+        // 初期化
+        if (
+            init
+            || selectCharacterId == null
+        ) {
+            selectCharacterId = Number(activeTab[0].getAttribute("characterId"));
+        }
+
+        // タブボタンをアクティブ
+        let activeTabButton = document.querySelector('.tab_connect > button[characterId="' + selectCharacterId + '"]');
+        if (!activeTabButton) {
+            activeTabButton = activeTab[0];
+        }
+        activeTabButton.classList.add("active");
+    }
+    // ●それ以外の場合
+    else {
+        // エリアを非表示
+        containerConnect.classList.add("hidden");
+
+        // 選択
+        selectCharacterId = null
+    }
 }
 
 /**
  * テーブル描画：つながり
  */
 function drawConnect () {
+    // --------------------------------------------------
+    // 操作キャラクターなし
+    // --------------------------------------------------
+
+    if (selectCharacterId == null) {
+        return;
+    }
+
     // --------------------------------------------------
     // 通常行
     // --------------------------------------------------
@@ -343,12 +544,13 @@ function drawConnect () {
     // キャラクターごとにループ
     let index = 0;
     listCharacter.forEach(() => {
-        // 「あなた」は除く
-        if (index > 0) {
+        // 選択キャラクターは除く
+        if (index != selectCharacterId) {
             // テンプレートを複製
             let cloneItem = templateItem.content.cloneNode(true);
 
             // ID設定
+            cloneItem.firstElementChild.setAttribute("characterId", index);
             cloneItem.querySelectorAll('[id]').forEach(target => {
                 target.id += index;
             });
@@ -363,38 +565,52 @@ function drawConnect () {
             // 【つながり】の初期値
             // --------------------------------------------------
 
-            // あなた
-            let to = listCharacter[0];
+            // あなたからの【つながり】
+            let to = listCharacter[selectCharacterId];
+            let toConnect = to.connect[index];
+            // - 設定：前
+            cloneItem.querySelector(".connect.before > input.detail").value = toConnect.before.name;
+            cloneItem.querySelector(".connect.before > input.value").value = toConnect.before.value;
+            // - 設定：後
+            cloneItem.querySelector(".connect.after > input.detail").value = toConnect.after.name;
+            cloneItem.querySelector(".connect.after > input.value").value = toConnect.after.value;
 
-            // つながり：前
-            cloneItem.querySelector(".connect.before > input.detail").value = to.connect[index].before.name;
-            cloneItem.querySelector(".connect.before > input.value").value = to.connect[index].before.value;
-
-            // つながり：後
-            cloneItem.querySelector(".connect.after > input.detail").value = to.connect[index].after.name;
-            cloneItem.querySelector(".connect.after > input.value").value = to.connect[index].after.value;
-
-            // あいて
+            // あいてからの【つながり】
             let from = listCharacter[index];
-
-            // つながり
-            cloneItem.querySelector(".connect.from > input.detail").value = from.connect[0].after.name;
-            cloneItem.querySelector(".connect.from > input.value").value = from.connect[0].after.value;
+            let fromConnect = from.connect[selectCharacterId];
+            // - 設定
+            cloneItem.querySelector(".connect.from > input.detail").value = fromConnect.after.name;
+            cloneItem.querySelector(".connect.from > input.value").value = fromConnect.after.value;
 
             // --------------------------------------------------
-            // 【つながり】の内容変更イベント
+            // 「次の強さ」
             // --------------------------------------------------
 
-            const inputDetail = cloneItem.querySelector(".connect.from > input.detail");
-            inputDetail.addEventListener(
-                "change",
-                ((id, value) => () => {
-                    changeConnectName(id, value)
-                })(index, inputDetail.value)
+            calcCost(
+                from,
+                toConnect.before.value,
+                toConnect.after.value,
+                cloneItem.querySelector(".connectNote.next > span")
             );
 
             // --------------------------------------------------
-            // 【つながり】の内容変更イベント
+            // 「あいて→あなた」
+            // --------------------------------------------------
+
+            // ●出力キャラクターの場合
+            if (from.control) {
+                // 非活性
+                cloneItem.querySelector(".connect.from > input.detail").disabled = true;
+                cloneItem.querySelector(".connect.from > input.value").disabled = true;
+            }
+            // ●それ以外の場合
+            else {
+                // 「タブを切り替えて入力してください」を削除
+                cloneItem.querySelector(".connectNote.from").remove();
+            }
+
+            // --------------------------------------------------
+            // 【つながり】の強さ変更イベント
             // --------------------------------------------------
 
             const inputValue = cloneItem.querySelectorAll("input.value");
@@ -410,6 +626,7 @@ function drawConnect () {
                             || event.key === "ArrowUp"
                             || event.key === "ArrowDown"
                             || event.key === "Tab"
+                            || event.ctrlKey
                         ) {
                             // 何もしない
                             return;
@@ -419,7 +636,7 @@ function drawConnect () {
                         const allowedKeys = ["0", "1", "2", "3", "4", "5"];
                         if (allowedKeys.includes(event.key)) {
                             // 入力した数値を適用
-                            input.value = event.data;
+                            event.target.value = event.key;
                         }
                         // ●それ以外の場合
                         else {
@@ -445,6 +662,9 @@ function drawConnect () {
                             // 入力した数値を適用
                             input.value = event.data;
                         }
+
+                        // 一時保存
+                        tempSaveData();
                     }
                 );
 
@@ -457,9 +677,91 @@ function drawConnect () {
                             // ０を入力
                             event.target.value = 0;
                         }
+
+                        // 一時保存
+                        tempSaveData();
                     }
                 );
             })
+
+            // --------------------------------------------------
+            // あなたからの【つながり】の内容変更イベント
+            // --------------------------------------------------
+
+            // 前
+            const connectToBeforeDetail = cloneItem.querySelector(".connect.before > input.detail")
+            connectToBeforeDetail.addEventListener(
+                "change",
+                ((index, value) => () => {
+                    // 名前変更を全要素に適用
+                    changeConnectToBeforeName(index, value);
+
+                    // 一時保存
+                    tempSaveData();
+                })(index, connectToBeforeDetail.value)
+            );
+
+            // 後
+            const connectToAfterDetail = cloneItem.querySelector(".connect.after > input.detail")
+            connectToAfterDetail.addEventListener(
+                "change",
+                ((index, value) => () => {
+                    // 名前変更を全要素に適用
+                    changeConnectToAfterName(index, value);
+
+                    // 一時保存
+                    tempSaveData();
+                })(index, connectToAfterDetail.value)
+            );
+
+            // --------------------------------------------------
+            // あいてからの【つながり】の内容変更イベント
+            // --------------------------------------------------
+
+            const connectFromDetail = cloneItem.querySelector(".connect.from > input.detail")
+            connectFromDetail.addEventListener(
+                "change",
+                ((index, value) => () => {
+                    // 名前変更を全要素に適用
+                    changeConnectFromName(index, value);
+
+                    // 一時保存
+                    tempSaveData();
+                })(index, connectFromDetail.value)
+            );
+
+            // --------------------------------------------------
+            // あいてからの【つながり】の強さ変更イベント
+            // --------------------------------------------------
+
+            const connectFromValue = cloneItem.querySelector(".connect.from > input.value")
+            connectFromValue.addEventListener(
+                "change",
+                () => {
+                    // 一時保存
+                    tempSaveData();
+                }
+            );
+
+            // --------------------------------------------------
+            // 「次の強さ」
+            // --------------------------------------------------
+
+            const elemConnectToValues = cloneItem.querySelectorAll(".connect.to > input.value");
+            elemConnectToValues.forEach(target => {
+                target.addEventListener(
+                    "input",
+                    ((from, index) => () => {
+                        const targetRow = document.querySelector('tr[characterid="' + index + '"]');
+                        const before = targetRow.querySelector(".connect.before > input.value").value;
+                        const after = targetRow.querySelector(".connect.after > input.value").value;
+                        const target = targetRow.querySelector(".connectNote.next > span");
+
+                        calcCost(from, before, after, target);
+                    })(from, index)
+                );
+            });
+
 
             // --------------------------------------------------
 
@@ -491,37 +793,83 @@ function drawConnect () {
 /**
  * つながりデータ設定
  */
-function setConnect (i) {
+function setConnect (i, init = false) {
     // キャラクターごとにループ
     for (let j = 0; j < listCharacter.length; j++) {
         let connect = null;
 
-        // あなた→あいて・あいて→あなたのみデータ作成
-        if (
-            (i == 0 && j > 0)
-            || (i > 0 && j == 0)
-        ) {
+        // --------------------------------------------------
+        // 初期値
+        // --------------------------------------------------
+
+        let defaultData;
+
+        // ●町
+        if ((init && i == 0) ) {
+            defaultData = {
+                name: "受容",
+                value: "2",
+            }
+        }
+        // ●それ以外
+        else {
+            defaultData = {
+                name: "",
+                value: "0",
+            }
+        }
+
+        // --------------------------------------------------
+        // データ
+        // --------------------------------------------------
+
+        // 生成
+        if (i != j) {
             connect = {
-                before: {
-                    name: "",
-                    value: "0",
-                },
-                after: {
-                    name: "",
-                    value: "0",
-                }
+                before: defaultData,
+                after: defaultData,
             };
         }
 
-        // データを挿入
+        // 挿入
         listCharacter[i].connect.push(connect)
     }
 }
 
 /**
+ * 操作チェック
+ */
+function toggleCheckControl (index, value) {
+    // データを変更
+    listCharacter[index].control = value;
+
+    // 初期化
+    initialise();
+}
+
+/**
+ * 計算：次の強さ
+ */
+function calcCost (character, before, after, target) {
+    // 次の強さ
+    let nextValue = character.cost[Number(after)];
+
+    // 強さが下がるor最大の場合
+    if (
+        !nextValue
+        || Number(before) > Number(after)
+    ) {
+        nextValue = "-";
+    }
+
+    // 描画
+    target.textContent = nextValue;
+}
+
+/**
  * 計算：ふしぎ（＆夢）
  */
-function calcFushigi (save = true) {
+function calcFushigi () {
     // ふしぎ
     let value = 0;
     document.querySelectorAll(".connect_value_to").forEach(target => {
@@ -530,18 +878,23 @@ function calcFushigi (save = true) {
     document.getElementById("total_fushigi").textContent = value;
 
     // 夢
-    calcYume(save);
+    calcYume();
 }
 
 /**
  * 計算：夢
  */
-function calcYume (save) {
+function calcYume () {
     // --------------------------------------------------
     // つながりから夢コストを計算
     // --------------------------------------------------
 
-    for (let i = 1; i < listCharacter.length; i++) {
+    for (let i = 0; i < listCharacter.length; i++) {
+        // 選択キャラクターは除く
+        if (i == selectCharacterId) {
+            continue;
+        }
+
         let cost = 0;
 
         const before = Number(document.querySelector("#connect_to_" + i + " input.connect_before").value);
@@ -567,31 +920,18 @@ function calcYume (save) {
     })
 
     document.getElementById("total_yume").textContent = value;
-
-    // --------------------------------------------------
-    // ローカルストレージに保存
-    // --------------------------------------------------
-
-    if (save) {
-        localSave();
-    }
 }
 
 /**
  * 計算：想い
  */
-function calcOmoi (save = true) {
+function calcOmoi () {
     // 計算
     let value = 0;
     document.querySelectorAll(".connect_value_from").forEach(target => {
         value += Number(target.value);
     })
     document.getElementById("total_omoi").textContent = value;
-
-    // ローカルストレージに保存
-    if (save){
-        localSave();
-    }
 }
 
 /**
@@ -621,29 +961,41 @@ function checkTsuyoiTsunagari () {
  * 追加・削除用、データ一時保存
  */
 function tempSaveData () {
-    // あなた
-    let to = listCharacter[0];
+    // 操作キャラクター
+    let to = listCharacter[selectCharacterId];
+
+    // 操作キャラクターが無い場合は、処理を行わない
+    if (!to) {
+        return;
+    }
 
     // あいて分ループ
-    let index = 1;
     document.querySelectorAll(".connect_row").forEach(target => {
-        // あいて
-        let from = listCharacter[index];
+        const index = target.getAttribute("characterId");
 
-        // あなたからの【つながり】：前
-        to.connect[index].before.name = target.querySelector(".connect.before > input.detail").value;
-        to.connect[index].before.value = target.querySelector(".connect.before > input.value").value;
+        // --------------------------------------------------
+        // あなたからの【つながり】
+        // --------------------------------------------------
 
-        // あなたからの【つながり】：後
-        to.connect[index].after.name = target.querySelector(".connect.after > input.detail").value;
-        to.connect[index].after.value = target.querySelector(".connect.after > input.value").value;
+        let toConnect = to.connect[index];
 
+        // 設定：前
+        toConnect.before.name = target.querySelector(".connect.before > input.detail").value;
+        toConnect.before.value = target.querySelector(".connect.before > input.value").value;
+
+        // 設定：後
+        toConnect.after.name = target.querySelector(".connect.after > input.detail").value;
+        toConnect.after.value = target.querySelector(".connect.after > input.value").value;
+
+        // --------------------------------------------------
         // あいてからの【つながり】
-        from.connect[0].after.name = target.querySelector(".connect.from > input.detail").value;
-        from.connect[0].after.value = target.querySelector(".connect.from > input.value").value;
+        // --------------------------------------------------
 
-        // 次のあいてへ
-        index++;
+        let fromConnect = listCharacter[index].connect[selectCharacterId];
+
+        // 設定
+        fromConnect.after.name = target.querySelector(".connect.from > input.detail").value;
+        fromConnect.after.value = target.querySelector(".connect.from > input.value").value;
     });
 }
 
@@ -655,7 +1007,20 @@ function localSave () {
     tempSaveData();
 
     // ローカルストレージに保存
-    localStorage.setItem("data", JSON.stringify(listCharacter));
+    localStorage.setItem("CharacterData", JSON.stringify(listCharacter));
+
+    // --------------------------------------------------
+    // アナウンス
+    // --------------------------------------------------
+
+    // 表示
+    const announce = document.getElementById("announce");
+    announce.classList.add("show");
+
+    // 1000ms後、非表示
+    setTimeout(() => {
+        announce.classList.remove("show");
+    }, 1000);
 }
 
 // ====================================================================================================
@@ -665,19 +1030,20 @@ function localSave () {
 /**
  * キャラクター名の変更
  */
-function nameChange (event, index, save = true) {
+function nameChange (event, index) {
     // キャラクターリストへ反映
     listCharacter[index].name = event.value;
 
+    // 置き換えID
+    let target = event.getAttribute("replace");
+    if (index == selectCharacterId) {
+        target = "name_self";
+    }
+
     // 【つながり】テーブルへ反映
-    document.querySelectorAll('span[replace="' + event.getAttribute("replace") + '"]').forEach(target => {
+    document.querySelectorAll('span[replace="' + target + '"]').forEach(target => {
         target.textContent = event.value;
     });
-
-    // ローカルストレージに保存
-    if (save) {
-        localSave();
-    }
 }
 
 /**
@@ -695,34 +1061,55 @@ function buttonAdd () {
     });
     setConnect(addId - 1);
 
-    // 「あなた」のつながり追加
-    listCharacter[0].connect.push({
-        before: {
-            name: "",
-            value: "0",
-        },
-        after: {
-            name: "",
-            value: "0",
-        }
+    // つながり追加
+    listCharacter.forEach(target => {
+        target.connect.push({
+            before: {
+                name: "",
+                value: "0",
+            },
+            after: {
+                name: "",
+                value: "0",
+            }
+        });
     });
 
     // 初期化
     initialise();
-
-    // ローカルストレージに保存
-    localSave();
 }
 
 /**
- * 【つながり】の内容変更
+ * あなたからの【つながり】：前の内容変更
  */
-function changeConnectName (id, value) {
+function changeConnectToBeforeName (id, value) {
     // 更新
-    listCharacter[id].connect[0].name = value;
+    listCharacter[selectCharacterId].connect[id].before.name = value;
 
-    // ローカルストレージに保存
-    localSave();
+    // 一時保存
+    tempSaveData();
+}
+
+/**
+ * あなたからの【つながり】：後の内容変更
+ */
+function changeConnectToAfterName (id, value) {
+    // 更新
+    listCharacter[selectCharacterId].connect[id].after.name = value;
+
+    // 一時保存
+    tempSaveData();
+}
+
+/**
+ * なかまからの【つながり】の内容変更
+ */
+function changeConnectFromName (id, value) {
+    // 更新
+    listCharacter[id].connect[selectCharacterId].after.name = value;
+
+    // 一時保存
+    tempSaveData();
 }
 
 /**
@@ -731,6 +1118,9 @@ function changeConnectName (id, value) {
 function buttonSettingPanel (event) {
     // ボタンの見た目変更
     event.classList.toggle("active");
+    document.querySelectorAll(".acordionArrow").forEach(target => {
+        target.classList.toggle("hidden");
+    });
 
     // パネルの開閉
     document.querySelector('.pannel_setting').classList.toggle("hidden");
@@ -740,8 +1130,10 @@ function buttonSettingPanel (event) {
  * 「クリップボードにコピーしました」表示
  */
 function buttonFadeEvent (event) {
-    // 見た目変更
+    // 表示
     event.classList.add("active");
+
+    // 1000ms後、非表示
     setTimeout(() => {
         event.classList.remove("active");
     }, 1000);
@@ -836,7 +1228,11 @@ function buttonOutputConnect (event) {
 
     // 文字列の生成
     let totalCost = 0;
-    let text = "【つながり】";
+
+    // ＊＊＊の【つながり】
+    const targetName = document.querySelector('[settingid="' + selectCharacterId + '"] input.input_name').value;
+    let text = targetName + "の【つながり】\r";
+
     document.querySelectorAll(".connect_row").forEach(row => {
         // 改行
         text += "\r";
@@ -922,9 +1318,16 @@ function showModalDelete (id) {
     const templateItem = document.getElementById("temp_modal");
     let modal = templateItem.content.cloneNode(true);
 
+    // キャラクター名
+    const targetName = document.querySelector('input[replace="name_' + id + '"]');
+
+    // 出力キャラクターか
+    const checkControl = targetName.parentElement.parentElement.querySelector('.checkControl > input[type="checkbox"]').checked;
+    const nameClass = "name_" + (checkControl ? "self" : "follow");
+
     // メッセージ
-    let name = document.querySelector('span[replace="name_follow_' + id + '"]').textContent;
-    let text = '<span class="name_follow">' + name + '</span>を削除しますか？';
+    let name = targetName.value;
+    let text = '<span class="' + nameClass + '">' + name + '</span>を削除しますか？';
     modal.querySelector(".message").innerHTML = text;
 
     // 「はい」ボタン
@@ -939,17 +1342,16 @@ function showModalDelete (id) {
             // 一時保存
             tempSaveData();
 
+            // つながり削除
+            listCharacter.forEach(target => {
+                target.connect.splice(id, 1);
+            });
+
             // 指定キャラクターを削除
             listCharacter.splice(id, 1);
 
-            // 「あなた」のつながり削除
-            listCharacter[0].connect.splice(id, 1);
-
             // 初期化
             initialise();
-
-            // ローカルストレージに保存
-            localSave();
 
             // --------------------------------------------------
 
@@ -972,7 +1374,8 @@ function showModalDecide (event) {
 
     // メッセージ
     let text
-        = "【つながり】を確定しますか？<br>"
+        = '<span class="name_self">' + listCharacter[selectCharacterId].name + '</span>'
+        + "の【つながり】を確定しますか？<br>"
         + "（変更後の内容・強さで上書きされます）";
     modal.querySelector(".message").innerHTML = text;
 
@@ -997,7 +1400,7 @@ function showModalDecide (event) {
             });
 
             // 計算
-            calcFushigi(false);
+            calcFushigi();
 
             // 強いつながり
             checkTsuyoiTsunagari();

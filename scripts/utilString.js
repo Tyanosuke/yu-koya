@@ -34,7 +34,7 @@ function getMaxLength (keyList, targetKey, blankValue = null) {
     // 対象リストの取得
     let targetList = listCharacter;
     if (keyList) {
-        targetList = listCharacter[0][keyList];
+        targetList = listCharacter[selectCharacterId][keyList];
     }
 
     // targetKeyを、ドット区切りで配列に変換
@@ -50,7 +50,7 @@ function getMaxLength (keyList, targetKey, blankValue = null) {
         // 「あなた」は表に出ないので、スキップ
         if (
             keyList == null
-            && JSON.stringify(item) == JSON.stringify(listCharacter[0])
+            && JSON.stringify(item) == JSON.stringify(listCharacter[selectCharacterId])
         ) {
             return 0;
         }

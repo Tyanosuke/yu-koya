@@ -1,4 +1,46 @@
 /* -------------------------------------------------- */
+/* タブ
+/* -------------------------------------------------- */
+
+.tab_connect
+{
+  display: flex;
+  gap: 12px;
+  padding-left: 12px;
+  overflow: auto;
+}
+
+.tab_connect > button
+{
+  margin-bottom: 8px;
+}
+
+.tab_connect > button.active
+{
+  position: sticky;
+  left: 0px;
+  background-color: var(--sub-color);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+  padding-bottom: 16px;
+  cursor: default;
+}
+
+.tab_add
+{
+  margin-bottom: 8px;
+}
+
+.area_connect
+{
+  min-width: fit-content;
+  border: solid 4px var(--sub-color);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+/* -------------------------------------------------- */
 /* 【つながり】
 /* -------------------------------------------------- */
 
@@ -24,7 +66,8 @@
 /* 【つながり】内容 */
 .connect input.detail
 {
-  width: 120px;
+  min-width: 120px;
+  flex-grow: 1;
   height: 50px;
   font-size: 20px;
   text-align: center;
@@ -71,6 +114,15 @@
   margin-left: auto;
 }
 
+/* 注釈 */
+.connectNote
+{
+  width: 100%;
+  margin-top: 12px;
+
+  text-align: center;
+}
+
 /* 強い【つながり】 */
 .strongConnect
 {
@@ -87,6 +139,7 @@
   font-size: 20px;
   font-weight: bold;
   text-align: center;
+  white-space: nowrap;
 }
 .strongConnect > .text_sub
 {

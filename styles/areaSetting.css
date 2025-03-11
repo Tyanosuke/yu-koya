@@ -5,17 +5,16 @@
 /* エリア */
 .area_setting
 {
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 /* パネル */
 .pannel_setting
 {
+  min-width: fit-content;
   background: var(--bg-color);
-  width: fit-content;
-  border: solid 4px var(--strong-color);
+  border: solid 4px var(--sub-color);
   border-radius: 8px;
-  border-top-left-radius: 0;
   padding: 12px;
 }
 
@@ -32,24 +31,16 @@
   border-bottom-right-radius: 0;
 }
 
-/* タイトル行 */
-.titleRow
+/* 番号 */
+.set_id
 {
-  display: flex;
-  margin-bottom: 8px;
+  font-size: 20px;
 }
 
 /* 「閉じる」ボタン */
 .titleRow > button
 {
   margin-left: auto;
-}
-
-/* 見出しセル */
-.titleCell
-{
-  color: var(--bg-color);
-  background: var(--font-color);
 }
 
 /* コスト */

@@ -16,13 +16,14 @@
 	</head>
 
 	<body>
-		<h1>
-			ゆうやけこやけ 【つながり】管理ツール
-		</h1>
+		<div id="mainContents" class="hidden">
+			<h1>
+				ゆうやけこやけ 【つながり】管理ツール
+				<span class="version">Ver.2.0</span>
+			</h1>
 
-		<span class="only_sp hidden">※スマホでは、正常に作動しない場合があります。</span>
+			<span class="only_sp hidden">※スマホでの動作は保証していません。</span>
 
-		<div>
 			<!------------------------------------------------------>
 			<!-- 設定 -->
 			<!------------------------------------------------------>
@@ -31,6 +32,8 @@
 				<div class="flex">
 					<button class="buttonAcordion" onclick="buttonSettingPanel(this)">
 						設定
+						<span class="acordionArrow">▼</span>
+						<span class="acordionArrow hidden">▲</span>
 					</button>
 				</div>
 
@@ -85,7 +88,15 @@
 					<table id="table_setting">
 						<tbody class="stickyRow">
 							<tr class="fixedRow">
-								<th class="titleCell" rowspan="2" colspan="2">
+								<th class="titleCell" rowspan="2">
+									番号
+								</th>
+
+								<th class="titleCell" rowspan="2">
+									出力
+								</th>
+
+								<th class="titleCell" rowspan="2">
 									名前
 								</th>
 
@@ -126,33 +137,39 @@
 			<!-- つながり -->
 			<!------------------------------------------------------>
 
-			<table id="table_connect">
-				<tr class="fixedRow stickyRow">
-					<th class="blank"></th>
+			<div id="container_connect">
+				<div class="tab_connect">
+				</div>
+				<div class="area_connect">
+					<table id="table_connect">
+						<tr class="fixedRow stickyRow">
+							<th class="blank"></th>
 
-					<th class="titleCell" colspan="2">
-						<div class="connectType">
-							<span replace="name_self" class="name_self">あなた</span>
-							→
-							<span class="name_follow">あいて</span>
-						</div>
-					</th>
+							<th class="titleCell" colspan="2">
+								<div class="connectType">
+									<span replace="name_self" class="name_self" replace="name_self">（あなた）</span>
+									→
+									<span class="name_follow">あいて</span>
+								</div>
+							</th>
 
-					<th class="titleCell">
-						<div class="connectType">
-							<span class="name_follow">
-								あいて
-							</span>
-							→
-							<span replace="name_self" class="name_self">
-								あなた
-							</span>
-						</div>
-					</th>
-				</tr>
+							<th class="titleCell">
+								<div class="connectType">
+									<span class="name_follow">
+										あいて
+									</span>
+									→
+									<span replace="name_self" class="name_self" replace="name_self">
+										（あなた）
+									</span>
+								</div>
+							</th>
+						</tr>
 
-				<!-- AddPoint -->
-			</table>
+						<!-- AddPoint -->
+					</table>
+				</div>
+			</div>
 		</div>
 
 		<!------------------------------------------------------>
@@ -175,49 +192,33 @@
 			<span>作った人：<a href="https://takusuki.com/@tyanosuke" target="_blank">茶の助</a></span>
 			<span>アイコン：<a href="https://icooon-mono.com/" target="_blank">ICOOON MONO</a></span>
 		</div>
+
+		<!------------------------------------------------------>
+		<!-- アナウンス -->
+		<!------------------------------------------------------>
+
+		<div id="announce">
+			データを保存しました
+		</div>
 	</body>
 
 	<!------------------------------------------------------>
 	<!-- キャラクター設定 -->
 	<!------------------------------------------------------>
 
-	<!-- 行：あなた -->
-	<template id="temp_setting_row_self">
-		<tr>
-			<th class="titleCell name_self">
-				あなた
-			</th>
-
-			<td>
-				<input replace="name_self" class="input_name" value="" onchange="nameChange(this)">
-			</td>
-
-			<td class="noRadius_right">
-			</td>
-
-			<td class="noRadius">
-			</td>
-
-			<td class="noRadius">
-			</td>
-
-			<td class="noRadius">
-			</td>
-
-			<td class="noRadius_left">
-			</td>
-		</tr>
-	</template>
-
 	<!-- 行：あいて -->
 	<template id="temp_setting_row_follow">
-		<tr>
-			<th class="titleCell name_follow">
-				あいて<span class="set_id">0</span>
+		<tr settingId="">
+			<th class="titleCell">
+				<span class="set_id">0</span>
+			</th>
+
+			<th class="checkControl">
+				<input type="checkbox">
 			</th>
 
 			<td>
-				<input class="input_name" replace="name_follow_" value="">
+				<input class="input_name" replace="name_" value="">
 			</td>
 
 			<td class="noRadius_right">
@@ -266,12 +267,12 @@
 	<!-- 行：キャラクター -->
 	<template id="temp_connect_row">
 		<tr class="connect_row">
-			<th name="name_follow_" class="titleCell name_follow">
-				<span class="vertWright" replace="name_follow_">（キャラクター名）</span>
+			<th name="name_" class="titleCell name_follow">
+				<span class="vertWright" replace="name_">（名前）</span>
 			</th>
 
 			<td id="connect_to_">
-				<div class="connect before">
+				<div class="connect to before">
 					<input class="detail" placeholder="内容">
 					<input
 						type="number"
@@ -285,7 +286,7 @@
 
 				<div class="connect_arrow">▼</div>
 
-				<div class="connect after">
+				<div class="connect to after">
 					<input class="detail" placeholder="内容">
 					<input
 						type="number"
@@ -303,6 +304,9 @@
 					<label>夢</label>
 					<span class="value">0</span>
 				</div>
+				<div class="connectNote next">
+					次の強さ：<span>0</span>
+				</div>
 			</td>
 
 			<td id="connect_from_">
@@ -316,6 +320,10 @@
 						class="value connect_value_from"
 						onchange="calcOmoi()"
 					>
+				</div>
+				<div class="connectNote from">
+					タブを切り替えて<br>
+					入力してください
 				</div>
 			</td>
 
