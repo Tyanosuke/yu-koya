@@ -140,38 +140,8 @@ window.onload = function() {
                 // 以前のデータを取得
                 listCharacter = localData;
 
-                // --------------------------------------------------
                 // 前バージョン互換
-                // --------------------------------------------------
-
-                // 「出力チェック」control
-                if (listCharacter[0].control == undefined) {
-                    for (let i = 0; i < listCharacter.length; i++) {
-                        listCharacter[i].control = (i == 0);
-                    }
-                }
-
-                // 「つながり」connect
-                for (let i = 0; i < listCharacter.length; i++) {
-                    // 足りない分を補填
-                    const lengthDifference = Math.abs(listCharacter[i].connect.length - listCharacter[i].length);
-                    if (lengthDifference > 0) {
-                        for (let j = 0; j < lengthDifference; j++) {
-                            listCharacter[i].connect.push({
-                                before: {
-                                    name: "",
-                                    value: "0",
-                                },
-                                after: {
-                                    name: "",
-                                    value: "0",
-                                }
-                            });
-                        }
-                    }
-                }
-
-                // --------------------------------------------------
+                compatible();
 
                 // 初期化
                 initialise();
@@ -186,6 +156,57 @@ window.onload = function() {
     }
 }
 
+/**
+ * 前バージョン互換
+ */
+function compatible () {
+    for (let i = 0; i < listCharacter.length; i++) {
+        // 「出力チェック」control
+        let control = listCharacter[i].control;
+        if (control == undefined) {
+            control = (i == 0);
+        }
+
+        // 「つながり」connect
+        const lengthDifference = (listCharacter[i].connect.length - listCharacter[i].length);
+        if (lengthDifference > 0) {
+            for (let j = 0; j < lengthDifference; j++) {
+                let connect = listCharacter[i].connect[j];
+
+                // 対応していなかった、なかまからの【つながり】を補填
+                if (
+                    i != j
+                    && connect == null
+                ) {
+                    connect = {
+                        before: {
+                            name: "",
+                            value: "0",
+                        },
+                        after: {
+                            name: "",
+                            value: "0",
+                        }
+                    };
+                }
+
+                // 【つながり】対象が足りない場合、補填
+                if (connect == undefined) {
+                    listCharacter[i].connect.push({
+                        before: {
+                            name: "",
+                            value: "0",
+                        },
+                        after: {
+                            name: "",
+                            value: "0",
+                        }
+                    });
+                }
+            }
+        }
+    }
+}
 
 /**
  * 初期化
