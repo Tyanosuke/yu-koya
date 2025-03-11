@@ -724,20 +724,18 @@ function drawConnect () {
             // --------------------------------------------------
 
             const elemConnectToValues = cloneItem.querySelectorAll(".connect.to > input.value");
-            ["input", "change"].forEach((eventType) => {
-                elemConnectToValues.forEach(target => {
-                    target.addEventListener(
-                        eventType,
-                        ((from, index) => () => {
-                            const targetRow = document.querySelector('tr[characterid="' + index + '"]');
-                            const before = targetRow.querySelector(".connect.before > input.value").value;
-                            const after = targetRow.querySelector(".connect.after > input.value").value;
-                            const target = targetRow.querySelector(".connectNote.next > span");
+            elemConnectToValues.forEach(target => {
+                target.addEventListener(
+                    "input",
+                    ((from, index) => () => {
+                        const targetRow = document.querySelector('tr[characterid="' + index + '"]');
+                        const before = targetRow.querySelector(".connect.before > input.value").value;
+                        const after = targetRow.querySelector(".connect.after > input.value").value;
+                        const target = targetRow.querySelector(".connectNote.next > span");
 
-                            calcCost(from, before, after, target);
-                        })(from, index)
-                    );
-                });
+                        calcCost(from, before, after, target);
+                    })(from, index)
+                );
             });
 
 
