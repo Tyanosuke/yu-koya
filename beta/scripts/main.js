@@ -167,41 +167,38 @@ function compatible () {
         }
 
         // 「つながり」connect
-        const lengthDifference = (listCharacter[i].connect.length - listCharacter[i].length);
-        if (lengthDifference > 0) {
-            for (let j = 0; j < lengthDifference; j++) {
-                let connect = listCharacter[i].connect[j];
+        for (let j = 0; j < listCharacter.length; j++) {
+            let connect = listCharacter[i].connect[j];
 
-                // 対応していなかった、なかまからの【つながり】を補填
-                if (
-                    i != j
-                    && connect == null
-                ) {
-                    listCharacter[i].connect[j] = {
-                        before: {
-                            name: "",
-                            value: "0",
-                        },
-                        after: {
-                            name: "",
-                            value: "0",
-                        }
-                    };
-                }
+            // 対応していなかった、なかまからの【つながり】を補填
+            if (
+                connect == null
+                && i != j
+            ) {
+                listCharacter[i].connect[j] = {
+                    before: {
+                        name: "",
+                        value: "0",
+                    },
+                    after: {
+                        name: "",
+                        value: "0",
+                    }
+                };
+            }
 
-                // 【つながり】対象が足りない場合、補填
-                if (connect == undefined) {
-                    listCharacter[i].connect.push({
-                        before: {
-                            name: "",
-                            value: "0",
-                        },
-                        after: {
-                            name: "",
-                            value: "0",
-                        }
-                    });
-                }
+            // 【つながり】対象が足りない場合、補填
+            if (connect == undefined) {
+                listCharacter[i].connect.push({
+                    before: {
+                        name: "",
+                        value: "0",
+                    },
+                    after: {
+                        name: "",
+                        value: "0",
+                    }
+                });
             }
         }
     }
