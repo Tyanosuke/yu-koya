@@ -140,6 +140,13 @@ window.onload = function() {
                 // 以前のデータを取得
                 listCharacter = localData;
 
+                // 前バージョン対応
+                if (listCharacter[0].control == undefined) {
+                    for (let i = 0; i < listCharacter.length; i++) {
+                        listCharacter[i].control = (i == 0);
+                    }
+                }
+
                 // 初期化
                 initialise();
 
