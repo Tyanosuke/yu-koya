@@ -103,7 +103,7 @@ window.onload = function() {
     // 初期化
     // --------------------------------------------------
 
-    initialise();
+    initialise(true);
 
     // --------------------------------------------------
     // 復元
@@ -144,7 +144,7 @@ window.onload = function() {
                 compatible();
 
                 // 初期化
-                initialise();
+                initialise(true);
 
                 // モーダルを非表示
                 hideModal();
@@ -170,9 +170,9 @@ function compatible () {
         for (let j = 0; j < listCharacter.length; j++) {
             let connect = listCharacter[i].connect[j];
 
-            // 対応していなかった、なかまからの【つながり】を補填
+            // ●対応していなかった、なかまからの【つながり】を補填
             if (
-                connect == null
+                connect === null
                 && i != j
             ) {
                 listCharacter[i].connect[j] = {
@@ -186,9 +186,8 @@ function compatible () {
                     }
                 };
             }
-
-            // 【つながり】対象が足りない場合、補填
-            if (connect == undefined) {
+            // ●【つながり】対象が足りない場合、補填
+            else if (connect === undefined) {
                 listCharacter[i].connect.push({
                     before: {
                         name: "",
@@ -207,13 +206,13 @@ function compatible () {
 /**
  * 初期化
  */
-function initialise () {
+function initialise (init = false) {
     // --------------------------------------------------
     // テーブル描画
     // --------------------------------------------------
 
     // 設定
-    drawSetting();
+    drawSetting(init);
 
     // つながり
     drawConnect();
@@ -296,7 +295,7 @@ function initialise () {
 /**
  * テーブル描画：設定
  */
-function drawSetting() {
+function drawSetting(init) {
     // --------------------------------------------------
     // 通常行
     // --------------------------------------------------
@@ -474,9 +473,12 @@ function drawSetting() {
         // エリアを表示
         containerConnect.classList.remove("hidden");
 
-        // 選択（初回のみ）
-        if (selectCharacterId == null) {
-            selectCharacterId = activeTab[0].getAttribute("characterId");
+        // 初期化
+        if (
+            init
+            || selectCharacterId == null
+        ) {
+            selectCharacterId = Number(activeTab[0].getAttribute("characterId"));
         }
 
         // タブボタンをアクティブ
