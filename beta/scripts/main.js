@@ -162,9 +162,8 @@ window.onload = function() {
 function compatible () {
     for (let i = 0; i < listCharacter.length; i++) {
         // 「出力チェック」control
-        let control = listCharacter[i].control;
-        if (control == undefined) {
-            control = (i == 0);
+        if (listCharacter[i].control == undefined) {
+            listCharacter[i].control = (i == 0);
         }
 
         // 「つながり」connect
@@ -178,7 +177,7 @@ function compatible () {
                     i != j
                     && connect == null
                 ) {
-                    connect = {
+                    listCharacter[i].connect[j] = {
                         before: {
                             name: "",
                             value: "0",
