@@ -113,7 +113,16 @@ window.onload = function() {
     let errorFlag = false;
     let localData;
     try {
-        localData = JSON.parse(localStorage.getItem("data"));
+        localData = JSON.parse(localStorage.getItem("CharacterData"));
+
+        // 旧バージョンデータ
+        if (!localData) {
+            localData = JSON.parse(localStorage.getItem("data"));
+            if (localData) {
+                // 前バージョン互換
+                compatible(localData);
+            }
+        }
     } catch {
         errorFlag = true;
     }
@@ -140,9 +149,6 @@ window.onload = function() {
                 // 以前のデータを取得
                 listCharacter = localData;
 
-                // 前バージョン互換
-                compatible();
-
                 // 初期化
                 initialise(true);
 
@@ -159,16 +165,16 @@ window.onload = function() {
 /**
  * 前バージョン互換
  */
-function compatible () {
-    for (let i = 0; i < listCharacter.length; i++) {
+function compatible (data) {
+    for (let i = 0; i < data.length; i++) {
         // --------------------------------------------------
         // 「出力チェック」control
         // --------------------------------------------------
 
         // データが無い場合
-        if (listCharacter[i].control == undefined) {
+        if (data[i].control == undefined) {
             // 最初のキャラクターのみＯＮ
-            listCharacter[i].control = (i == 0);
+            data[i].control = (i == 0);
         }
 
         // --------------------------------------------------
@@ -176,15 +182,15 @@ function compatible () {
         // --------------------------------------------------
 
         // キャラクター数とデータ数を合わせる（追加）
-        for (let j = 0; j < listCharacter.length; j++) {
-            let connect = listCharacter[i].connect[j];
+        for (let j = 0; j < data.length; j++) {
+            let connect = data[i].connect[j];
 
             // ●対応していなかった、なかまからの【つながり】を補填
             if (
                 connect === null
                 && i != j
             ) {
-                listCharacter[i].connect[j] = {
+                data[i].connect[j] = {
                     before: {
                         name: "",
                         value: "0",
@@ -197,7 +203,7 @@ function compatible () {
             }
             // ●【つながり】対象が足りない場合、補填
             else if (connect === undefined) {
-                listCharacter[i].connect.push({
+                data[i].connect.push({
                     before: {
                         name: "",
                         value: "0",
@@ -211,9 +217,9 @@ function compatible () {
         }
 
         // キャラクター数とデータ数を合わせる（削除）
-        const lengthDifferent = (listCharacter[i].connect.length - listCharacter.length);
+        const lengthDifferent = (data[i].connect.length - data.length);
         if (lengthDifferent > 0) {
-            listCharacter[i].connect.splice(-lengthDifferent, lengthDifferent);
+            data[i].connect.splice(-lengthDifferent, lengthDifferent);
         }
 
         // --------------------------------------------------
@@ -1008,7 +1014,7 @@ function localSave () {
     tempSaveData();
 
     // ローカルストレージに保存
-    localStorage.setItem("data", JSON.stringify(listCharacter));
+    localStorage.setItem("CharacterData", JSON.stringify(listCharacter));
 
     // --------------------------------------------------
     // アナウンス
