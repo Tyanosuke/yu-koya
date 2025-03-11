@@ -161,12 +161,21 @@ window.onload = function() {
  */
 function compatible () {
     for (let i = 0; i < listCharacter.length; i++) {
+        // --------------------------------------------------
         // 「出力チェック」control
+        // --------------------------------------------------
+
+        // データが無い場合
         if (listCharacter[i].control == undefined) {
+            // 最初のキャラクターのみＯＮ
             listCharacter[i].control = (i == 0);
         }
 
+        // --------------------------------------------------
         // 「つながり」connect
+        // --------------------------------------------------
+
+        // キャラクター数とデータ数を合わせる（追加）
         for (let j = 0; j < listCharacter.length; j++) {
             let connect = listCharacter[i].connect[j];
 
@@ -200,6 +209,14 @@ function compatible () {
                 });
             }
         }
+
+        // キャラクター数とデータ数を合わせる（削除）
+        const lengthDifferent = (listCharacter[i].connect - listCharacter.length);
+        if (lengthDifferent > 0) {
+            listCharacter[i].connect.splice(-lengthDifferent, lengthDifferent);
+        }
+
+        // --------------------------------------------------
     }
 }
 
