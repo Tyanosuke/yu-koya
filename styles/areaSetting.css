@@ -13,7 +13,7 @@
 {
   min-width: fit-content;
   background: var(--bg-color);
-  border: solid 4px var(--sub-color);
+  border: solid 4px var(--strong-color);
   border-radius: 8px;
   padding: 12px;
 }

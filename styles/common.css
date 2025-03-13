@@ -290,7 +290,7 @@ td > button
 
 .buttonAcordion.active
 {
-  background-color: var(--sub-color);
+  background-color: var(--strong-color);
 }
 
 .acordionArrow
